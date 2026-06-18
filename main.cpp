@@ -1,9 +1,14 @@
 #include <Windows.h>
 #include "framework.h"
 #include "DX3D.h"
+#include "ImGUI/imgui.h"
+#include "ImGUI/imgui_impl_win32.h"
+#include "ImGUI/imgui_impl_dx11.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int initializeWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
+int initializeImGUI();
 
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
@@ -11,6 +16,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     initializeWindow(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     DX3D::initializeDX3D();
+    initializeImGUI();
 
     MSG msg = {};
     while (msg.message != WM_QUIT) {
@@ -20,10 +26,29 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
         else {
             auto deviceContext = DX3D::GetDeviceContext();
-            auto renderTargetView = DX3D::GetRenderTargetView();
+            auto renderTargetView = DX3D::GetRenderTargetView();        
 
             deviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
             deviceContext->ClearRenderTargetView(renderTargetView, GameWindow::BACKGROUND_COLOR);
+
+            auto& imguiIO = ImGui::GetIO();
+            ImGui_ImplDX11_NewFrame();
+            ImGui_ImplWin32_NewFrame();
+            ImGui::NewFrame();
+
+            ImGui::Begin("Game");
+            ImGui::End();
+
+
+            ImGui::EndFrame();
+            ImGui::Render();
+            ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+            if (imguiIO.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+                ImGui::UpdatePlatformWindows();
+                ImGui::RenderPlatformWindowsDefault();
+            }
+
+            
 
             DX3D::GetSwapChain()->Present(1, 0);
         }
@@ -32,14 +57,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     return 0;
 }
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
+        return true;
+
     switch (msg) {
     case WM_DESTROY: {
         PostQuitMessage(0);
         break;
     }
     }
-    return DefWindowProc(hWnd, msg, wParam, lParam);
+    return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
 int initializeWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
@@ -73,5 +101,20 @@ int initializeWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     ShowWindow(GameWindow::mainHWND, nShowCmd); //ウインドウを表示
     UpdateWindow(GameWindow::mainHWND);
+    return 0;
+}
+
+int initializeImGUI() {
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+    ImGui::StyleColorsLight();
+    ImGui_ImplWin32_Init(GameWindow::mainHWND);
+    ID3D11Device* device = (ID3D11Device*)DX3D::GetDevice();
+    ID3D11DeviceContext* deviceContext = (ID3D11DeviceContext*)DX3D::GetDeviceContext();
+    ImGui_ImplDX11_Init(device, deviceContext);
+
     return 0;
 }

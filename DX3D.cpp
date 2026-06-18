@@ -54,6 +54,8 @@ namespace DX3D {
 		IDXGISurface* surface = nullptr;
 		swapChain_->GetBuffer(0, IID_PPV_ARGS(&surface));
 
+		device_->CreateRenderTargetView(texture2D_, NULL, &renderTargetView_);
+
 		D3D11_VIEWPORT viewport = {};
 		viewport.Width = GameWindow::WINDOW_WIDTH;
 		viewport.Height = GameWindow::WINDOW_HEIGHT;
