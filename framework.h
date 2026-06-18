@@ -6,6 +6,7 @@ namespace GameWindow {
 	inline const int WINDOW_HEIGHT = 720;
 	inline const char* WINDOW_CLASS = "GameEngine";
 	inline const char* WINDOW_TITLE = "Game";
+	inline const float BACKGROUND_COLOR[4] = { 0.0f, 0.0f, 0.0f };
 
 	inline HWND mainHWND = {};
 }

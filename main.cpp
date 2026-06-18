@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include "framework.h"
+#include "DX3D.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int initializeWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
@@ -9,6 +10,24 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     //初期化処理
     initializeWindow(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
+    DX3D::initializeDX3D();
+
+    MSG msg = {};
+    while (msg.message != WM_QUIT) {
+        if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+        else {
+            auto deviceContext = DX3D::GetDeviceContext();
+            auto renderTargetView = DX3D::GetRenderTargetView();
+
+            deviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
+            deviceContext->ClearRenderTargetView(renderTargetView, GameWindow::BACKGROUND_COLOR);
+
+            DX3D::GetSwapChain()->Present(1, 0);
+        }
+    }
 
     return 0;
 }
@@ -54,17 +73,5 @@ int initializeWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
     ShowWindow(GameWindow::mainHWND, nShowCmd); //ウインドウを表示
     UpdateWindow(GameWindow::mainHWND);
-
-    MSG msg = {};
-    while (msg.message != WM_QUIT) {
-        if (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE)) {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
-        }
-        else {
-
-        }
-    }
-
     return 0;
 }
