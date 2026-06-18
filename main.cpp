@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include "framework.h"
+#include "ShaderManager.h"
 #include "DX3D.h"
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_win32.h"
@@ -16,6 +17,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     initializeWindow(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     DX3D::initializeDX3D();
+    ShaderManager::initialize();
     initializeImGUI();
 
     MSG msg = {};
