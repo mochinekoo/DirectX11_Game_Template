@@ -28,6 +28,12 @@
     <ClCompile Include="ImGUI\imgui_widgets.cpp">
       <Filter>Library\ImGUI</Filter>
     </ClCompile>
+    <ClCompile Include="ShaderManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D.h">
@@ -63,6 +69,27 @@
     <ClInclude Include="ImGUI\imstb_truetype.h">
       <Filter>Library\ImGUI</Filter>
     </ClInclude>
+    <ClInclude Include="BaseObject.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Manager">
@@ -83,5 +110,9 @@
     <Filter Include="Library\ImGUI">
       <UniqueIdentifier>{2d01bfa9-0a88-424b-bd87-903daaa4344c}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="TestPS.hlsl" />
+    <FxCompile Include="TestVS.hlsl" />
   </ItemGroup>
 </Project>

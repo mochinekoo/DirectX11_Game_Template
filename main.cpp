@@ -5,6 +5,7 @@
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_win32.h"
 #include "ImGUI/imgui_impl_dx11.h"
+#include "Box.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -19,6 +20,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     DX3D::initializeDX3D();
     ShaderManager::initialize();
     initializeImGUI();
+	Box* box = new Box({ 0.0f, 0.0f, 0.0f });
+    box->Initialize();
 
     MSG msg = {};
     while (msg.message != WM_QUIT) {
@@ -37,6 +40,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             ImGui_ImplDX11_NewFrame();
             ImGui_ImplWin32_NewFrame();
             ImGui::NewFrame();
+
+            box->Update();
+            box->Draw();
 
             ImGui::Begin("Game");
             ImGui::End();

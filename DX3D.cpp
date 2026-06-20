@@ -16,6 +16,7 @@ namespace DX3D {
 	IDXGISwapChain* swapChain_ = nullptr;
 	ID3D11RenderTargetView* renderTargetView_ = nullptr;
 	ID3D11Texture2D* texture2D_ = nullptr;
+	ID3D11RasterizerState* rasterizerState_ = nullptr;
 
 	
 	int initializeDX3D() {
@@ -65,6 +66,13 @@ namespace DX3D {
 		viewport.TopLeftY = 0;
 		context_->RSSetViewports(1, &viewport);
 
+		D3D11_RASTERIZER_DESC rasterDesc = {};
+		rasterDesc.FillMode = D3D11_FILL_SOLID;
+		rasterDesc.CullMode = D3D11_CULL_NONE;
+		rasterDesc.FrontCounterClockwise = false;
+
+		GetDevice()->CreateRasterizerState(&rasterDesc, &rasterizerState_);
+
 		return 0;
 	}
 
@@ -86,6 +94,10 @@ namespace DX3D {
 
 	ID3D11Texture2D* GetTexture2D() {
 		return texture2D_;
+	}
+
+	ID3D11RasterizerState* GetRasterizerState() {
+		return rasterizerState_;
 	}
 
 }
