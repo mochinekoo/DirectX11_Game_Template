@@ -40,6 +40,9 @@
     <ClCompile Include="FBXModel.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>

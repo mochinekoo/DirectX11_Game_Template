@@ -9,6 +9,7 @@
 #include "CameraManager.h"
 #include <DirectXMath.h>
 #include "FBXModel.h"
+#include "InputManager.h"
 #include "SoundManager.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -25,7 +26,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     DX3D::initializeDX3D();
     ShaderManager::initialize();
     SoundManager::Initialize();
+    InputManager::Initialize(hInstance, GameWindow::mainHWND);
     initializeImGUI();
+
 	Box* box = new Box({ 100.0f, 100.0f, 0.0f });
     box->Initialize();
     FBXModel* fbx = new FBXModel("Assets/TestModel.fbx", {100.0f, 100.0f, 0.0f});
