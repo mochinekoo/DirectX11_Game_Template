@@ -1,6 +1,8 @@
 #include "Box.h"
 #include "DX3D.h"
 #include "ShaderManager.h"
+#include "CameraManager.h"
+#include "ImGUI/imgui.h"
 
 using namespace DirectX;
 using namespace DX3D;
@@ -10,12 +12,12 @@ Box::Box(XMFLOAT3 location)
 	location_ = location;
 
 	vertices_[0] = { 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f };
-	vertices_[1] = { 0.0f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f };
-	vertices_[2] = { 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
+	vertices_[1] = { 0.0f, -64.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f };
+	vertices_[2] = { 64.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
 
-	vertices_[3] = { 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f };
-	vertices_[4] = { 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f };
-	vertices_[5] = { 0.0f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
+	vertices_[3] = { 64.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f };
+	vertices_[4] = { 64.0f, -64.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f };
+	vertices_[5] = { 0.0f, -64.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f };
 }
 
 Box::~Box() {
@@ -43,12 +45,15 @@ void Box::Initialize() {
 }
 
 void Box::Update() {
-	XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(0.0f, 0.0f, 0.0f);
+	Camera* camera = CameraManager::GetCurrentCamera();
+	if (camera == nullptr) return;
+
+	XMMATRIX scale = XMMatrixScaling(scale_.x, scale_.y, scale_.z);
+	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(rotation_.x, rotation_.y, rotation_.z);
 	XMMATRIX translation = XMMatrixTranslation(location_.x, location_.y, location_.z);
 	XMMATRIX world = scale * rotation * translation;
-	XMMATRIX view = XMMatrixIdentity();
-	XMMATRIX projection = XMMatrixIdentity();
+	XMMATRIX view = camera->GetViewMatrix();
+	XMMATRIX projection = camera->projection_;
 
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.world = XMMatrixTranspose(world);
@@ -72,6 +77,16 @@ void Box::Draw() {
 	GetDeviceContext()->Draw(6, 0);
 	GetDeviceContext()->RSSetState(nullptr);
 
+#ifdef _DEBUG
+	ImGui::Begin("Box");
+	ImGui::SliderFloat("LocationX: ", &location_.x, -1280, 1280);
+	ImGui::SliderFloat("LocationY: ", &location_.y, -1280, 1280);
+	ImGui::SliderFloat("LocationZ: ", &location_.z, -1280, 1280);
+	ImGui::SliderFloat("RoationX: ", &rotation_.x, -10.0, 10.0);
+	ImGui::SliderFloat("RotationY: ", &rotation_.y, -10.0, 10.0);
+	ImGui::SliderFloat("RotationZ: ", &rotation_.z, -10.0, 10.0);
+	ImGui::End();
+#endif
 }
 
 void Box::Release()

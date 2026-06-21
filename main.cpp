@@ -6,12 +6,15 @@
 #include "ImGUI/imgui_impl_win32.h"
 #include "ImGUI/imgui_impl_dx11.h"
 #include "Box.h"
+#include "CameraManager.h"
+#include <DirectXMath.h>
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 int initializeWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
 int initializeImGUI();
 
+using namespace DirectX;
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     //初期化処理
@@ -20,8 +23,16 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     DX3D::initializeDX3D();
     ShaderManager::initialize();
     initializeImGUI();
-	Box* box = new Box({ 0.0f, 0.0f, 0.0f });
+	Box* box = new Box({ 100.0f, 100.0f, 0.0f });
     box->Initialize();
+
+	Camera* camera = CameraManager::AddCamera("RootCamera");
+	camera->name_ = "RootCamera";
+	camera->location_ = { 0.0f, 0.0f, -5.0f };
+	camera->target_ = { 0.0f, 0.0f, 0.0f };
+	camera->upDirection_ = { 0.0f, 1.0f, 0.0f };
+    camera->projection_ = XMMatrixOrthographicLH(1280, 720, 0, 100);
+	CameraManager::SetCurrentCamera("RootCamera");
 
     MSG msg = {};
     while (msg.message != WM_QUIT) {
@@ -45,6 +56,15 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             box->Draw();
 
             ImGui::Begin("Game");
+            ImGui::Text("Camera: %s", camera == nullptr ? "(null)" : camera->name_.c_str());
+            if (camera != nullptr) {
+                ImGui::SliderFloat("CameraLocX: ", &camera->location_.x, -1280, 1280);
+                ImGui::SliderFloat("CameraLocY: ", &camera->location_.y, -1280, 1280);
+                ImGui::SliderFloat("CameraLocZ: ", &camera->location_.z, -1280, 1280);
+                ImGui::SliderFloat("CameraTargetX: ", &camera->target_.x, -1280, 1280);
+                ImGui::SliderFloat("CameraTargetY: ", &camera->target_.y, -1280, 1280);
+                ImGui::SliderFloat("CameraTatgetZ: ", &camera->target_.z, -1280, 1280);
+            }
             ImGui::End();
 
 

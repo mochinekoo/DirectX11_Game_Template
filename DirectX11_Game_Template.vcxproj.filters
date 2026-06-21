@@ -34,6 +34,9 @@
     <ClCompile Include="Box.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="CameraManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D.h">

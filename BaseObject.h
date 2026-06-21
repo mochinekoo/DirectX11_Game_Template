@@ -8,6 +8,8 @@
 class BaseObject {
 protected:
 	DirectX::XMFLOAT3 location_ = {};
+	DirectX::XMFLOAT3 rotation_ = {};
+	DirectX::XMFLOAT3 scale_ = {};
 private:
 	std::string name_;
 	bool isDead_;
@@ -16,6 +18,9 @@ public:
 	BaseObject(std::string name) {
 		isDead_ = false;
 		name_ = name;
+		location_ = { 0.0f, 0.0f, 0.0f };
+		rotation_ = { 0.0f, 0.0f, 0.0f };
+		scale_ = { 1.0f, 1.0f, 1.0f };
 	};
 	virtual ~BaseObject() {}
 
