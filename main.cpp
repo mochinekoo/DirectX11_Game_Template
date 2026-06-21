@@ -9,6 +9,7 @@
 #include "CameraManager.h"
 #include <DirectXMath.h>
 #include "FBXModel.h"
+#include "SoundManager.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -23,6 +24,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     DX3D::initializeDX3D();
     ShaderManager::initialize();
+    SoundManager::Initialize();
     initializeImGUI();
 	Box* box = new Box({ 100.0f, 100.0f, 0.0f });
     box->Initialize();
