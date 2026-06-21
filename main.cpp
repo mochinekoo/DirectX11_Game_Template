@@ -8,6 +8,7 @@
 #include "Box.h"
 #include "CameraManager.h"
 #include <DirectXMath.h>
+#include "FBXModel.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -25,6 +26,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     initializeImGUI();
 	Box* box = new Box({ 100.0f, 100.0f, 0.0f });
     box->Initialize();
+    FBXModel* fbx = new FBXModel("Assets/TestModel.fbx", {100.0f, 100.0f, 0.0f});
+    fbx->Initialize();
 
 	Camera* camera = CameraManager::AddCamera("RootCamera");
 	camera->name_ = "RootCamera";
@@ -54,6 +57,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
             box->Update();
             box->Draw();
+            fbx->Update();
+            fbx->Draw();
 
             ImGui::Begin("Game");
             ImGui::Text("Camera: %s", camera == nullptr ? "(null)" : camera->name_.c_str());

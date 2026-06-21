@@ -37,6 +37,9 @@
     <ClCompile Include="CameraManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="FBXModel.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D.h">
@@ -91,6 +94,9 @@
       <Filter>Manager</Filter>
     </ClInclude>
     <ClInclude Include="Box.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXModel.h">
       <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
