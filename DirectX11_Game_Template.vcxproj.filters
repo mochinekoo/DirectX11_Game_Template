@@ -52,6 +52,9 @@
     <ClCompile Include="RootScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D.h">
@@ -113,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="RootScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

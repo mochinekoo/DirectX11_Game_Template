@@ -12,6 +12,7 @@
 #include "InputManager.h"
 #include "SoundManager.h"
 #include "SceneManager.h"
+#include "ObjectManager.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -30,11 +31,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     SoundManager::Initialize();
     InputManager::Initialize(hInstance, GameWindow::mainHWND);
     initializeImGUI();
-
-	Box* box = new Box({ 100.0f, 100.0f, 0.0f });
-    box->Initialize();
-    FBXModel* fbx = new FBXModel("Assets/TestModel.fbx", {100.0f, 100.0f, 0.0f});
-    fbx->Initialize();
 
 	Camera* camera = CameraManager::AddCamera("RootCamera");
 	camera->name_ = "RootCamera";
@@ -66,15 +62,12 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             if (currentScene != nullptr) {
                 currentScene->Update();
                 currentScene->Draw();
+                ObjectManager::UpdateManager();
             }
-
-            box->Update();
-            box->Draw();
-            fbx->Update();
-            fbx->Draw();
 
         #ifdef _DEBUG
             ImGui::Begin("Game");
+            ImGui::Text("ObjCount: %d", ObjectManager::GetObjectList().size());
             ImGui::Text("CurrentScene: %s", currentScene == nullptr ? "(null)" : currentScene->GetName().c_str());
             ImGui::Text("Camera: %s", camera == nullptr ? "(null)" : camera->name_.c_str());
             if (camera != nullptr) {
