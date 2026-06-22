@@ -144,6 +144,8 @@
     <ClCompile Include="ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RootScene.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="SoundManager.cpp" />
   </ItemGroup>
@@ -164,6 +166,7 @@
     <ClInclude Include="ImGUI\imstb_textedit.h" />
     <ClInclude Include="ImGUI\imstb_truetype.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="RootScene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="SoundManager.h" />

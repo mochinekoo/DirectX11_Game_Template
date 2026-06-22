@@ -11,6 +11,7 @@
 #include "FBXModel.h"
 #include "InputManager.h"
 #include "SoundManager.h"
+#include "SceneManager.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -25,6 +26,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     CoInitializeEx(NULL, COINIT_MULTITHREADED);
     DX3D::initializeDX3D();
     ShaderManager::initialize();
+    SceneManager::InitManager();
     SoundManager::Initialize();
     InputManager::Initialize(hInstance, GameWindow::mainHWND);
     initializeImGUI();
@@ -50,7 +52,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
         }
         else {
             auto deviceContext = DX3D::GetDeviceContext();
-            auto renderTargetView = DX3D::GetRenderTargetView();        
+            auto renderTargetView = DX3D::GetRenderTargetView();  
+            auto currentScene = SceneManager::GetCurrentScene();
 
             deviceContext->OMSetRenderTargets(1, &renderTargetView, nullptr);
             deviceContext->ClearRenderTargetView(renderTargetView, GameWindow::BACKGROUND_COLOR);
@@ -60,12 +63,19 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
             ImGui_ImplWin32_NewFrame();
             ImGui::NewFrame();
 
+            if (currentScene != nullptr) {
+                currentScene->Update();
+                currentScene->Draw();
+            }
+
             box->Update();
             box->Draw();
             fbx->Update();
             fbx->Draw();
 
+        #ifdef _DEBUG
             ImGui::Begin("Game");
+            ImGui::Text("CurrentScene: %s", currentScene == nullptr ? "(null)" : currentScene->GetName().c_str());
             ImGui::Text("Camera: %s", camera == nullptr ? "(null)" : camera->name_.c_str());
             if (camera != nullptr) {
                 ImGui::SliderFloat("CameraLocX: ", &camera->location_.x, -1280, 1280);
@@ -76,6 +86,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
                 ImGui::SliderFloat("CameraTatgetZ: ", &camera->target_.z, -1280, 1280);
             }
             ImGui::End();
+        #endif
 
 
             ImGui::EndFrame();

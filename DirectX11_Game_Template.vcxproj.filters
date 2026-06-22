@@ -46,6 +46,12 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="RootScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DX3D.h">
@@ -104,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="FBXModel.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="RootScene.h">
+      <Filter>Scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
