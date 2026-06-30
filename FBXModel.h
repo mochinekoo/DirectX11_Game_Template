@@ -3,6 +3,7 @@
 #include <string>
 #include <fbxsdk.h>
 #include "DX3D.h"
+#include <vector>
 
 #pragma comment(lib, "LibFbxSDK-MD.lib")
 #pragma comment(lib, "LibXml2-MD.lib")
@@ -11,11 +12,12 @@
 class FBXModel : public BaseObject {
 private:
 	std::string  fileName_ = "";
-	Vertex* vertexs_ = nullptr;
+	std::vector<Vertex> vertexs_;
+	std::vector<int> index_;
 	ID3D11Buffer* vertexsBuffer_ = nullptr;
 	ID3D11Buffer* indexBuffer_ = nullptr;
 	ID3D11Buffer* constantBuffer_ = nullptr;
-	int* index_ = nullptr;
+	int count_ = 0;
 
 	fbxsdk::FbxMesh* mesh_ = nullptr;
 	fbxsdk::FbxNode* node_ = nullptr;

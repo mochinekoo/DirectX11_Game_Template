@@ -26,11 +26,15 @@ void FBXModel::Initialize() {
 	fbxImporter->Import(fbxScene);
 	fbxImporter->Destroy();
 
+	FbxGeometryConverter converter(fbxManager);
+	converter.Triangulate(fbxScene, true);
+
 	FbxNode* rootNode = fbxScene->GetRootNode();
 	for (int i = 0; i < rootNode->GetChildCount(); i++) {
-		node_ = rootNode->GetChild(i);
-		if (node_->GetMesh() != nullptr) {
-			mesh_ = node_->GetMesh();
+		FbxNode* child = rootNode->GetChild(i);
+		if (child->GetMesh() != nullptr) {
+			mesh_ = child->GetMesh();
+			node_ = child;
 			break;
 		}
 	}
@@ -44,21 +48,33 @@ void FBXModel::InitVertexBuffer() {
 	int vertexCount = mesh_->GetControlPointsCount();
 	int polygonCount = mesh_->GetPolygonCount();
 	int materialCount = node_->GetMaterialCount();
-	vertexs_ = new Vertex[vertexCount]();
+
+	vertexs_.clear();
+	vertexs_.reserve(polygonCount * 3);
 	
 	for (DWORD i = 0; i < polygonCount; i++) {
 		for (int v = 0; v < 3; v++) {
 			int polyVertexIndex = mesh_->GetPolygonVertex(i, v);
 			FbxVector4 loc = mesh_->GetControlPointAt(polyVertexIndex);
-			vertexs_[polyVertexIndex].x = (float)loc[0];
-			vertexs_[polyVertexIndex].y = (float)loc[1];
-			vertexs_[polyVertexIndex].z = (float)loc[2];
+			Vertex vertex = {};
+			vertex.x = (float)loc[0];
+			vertex.y = (float)loc[1];
+			vertex.z = (float)loc[2];
+
+			vertex.r = 1.0f;
+			vertex.g = 1.0f;
+			vertex.b = 1.0f;
+			vertex.a = 1.0f;
+			vertex.u = 0.0f;
+			vertex.v = 0.0f;
+
+			vertexs_.push_back(vertex);
 		}
 	}
 
 	D3D11_BUFFER_DESC desc = {};
 	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.ByteWidth = sizeof(Vertex) * vertexCount;
+	desc.ByteWidth = sizeof(Vertex) * vertexs_.size();
 	desc.CPUAccessFlags = 0;
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
@@ -69,30 +85,29 @@ void FBXModel::InitVertexBuffer() {
 	GetDevice()->CreateBuffer(&constantBufferDesc, nullptr, &constantBuffer_);
 
 	D3D11_SUBRESOURCE_DATA vertiesData = {};
-	vertiesData.pSysMem = vertexs_;
+	vertiesData.pSysMem = vertexs_.data();
 
 	GetDevice()->CreateBuffer(&desc, &vertiesData, &vertexsBuffer_);
 }
 
 void FBXModel::InitIndexBuffer() {
 	int polygonCount = mesh_->GetPolygonCount();
-	index_ = new int[polygonCount * 3];
+	int materialCount = node_->GetMaterialCount();
 
-	int count = 0;
-	for (DWORD i = 0; i < polygonCount; i++) {
-		for (int v = 0; v < 3; v++) {
-			index_[count] = mesh_->GetPolygonVertex(i, v);
-			count++;
-		}
+	index_.clear();
+	index_.reserve(polygonCount * 3);
+
+	for (int i = 0; i < (int)vertexs_.size(); ++i) {
+		index_.push_back(i);
 	}
 
 	D3D11_BUFFER_DESC bd = {};
-	bd.ByteWidth = sizeof(int) * polygonCount * 3;
+	bd.ByteWidth = sizeof(int) * index_.size();
 	bd.Usage = D3D11_USAGE_DEFAULT;
 	bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA indexData = {};
-	indexData.pSysMem = index_;
+	indexData.pSysMem = index_.data();
 
 	GetDevice()->CreateBuffer(&bd, &indexData, &indexBuffer_);
 }
@@ -104,9 +119,9 @@ void FBXModel::Update() {
 	XMMATRIX scale = XMMatrixScaling(scale_.x, scale_.y, scale_.z);
 	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(rotation_.x, rotation_.y, rotation_.z);
 	XMMATRIX translation = XMMatrixTranslation(location_.x, location_.y, location_.z);
-	XMMATRIX world = XMMatrixIdentity();
-	XMMATRIX view = XMMatrixIdentity();
-	XMMATRIX projection = XMMatrixIdentity();
+	XMMATRIX world = scale * rotation * translation;
+	XMMATRIX view = camera->GetViewMatrix();
+	XMMATRIX projection = camera->projection_;
 
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.world = XMMatrixTranspose(world);
@@ -123,12 +138,13 @@ void FBXModel::Draw() {
 	GetDeviceContext()->RSSetState(GetRasterizerState());
 	GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexsBuffer_, &stride, &offset);
 	GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBuffer_);
+	GetDeviceContext()->PSSetConstantBuffers(0, 1, &constantBuffer_);
 	GetDeviceContext()->IASetIndexBuffer(indexBuffer_, DXGI_FORMAT_R32_UINT, 0);
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	GetDeviceContext()->IASetInputLayout(ShaderManager::GetVertexShader(TEST_VERTEX_SHADER).inputLayout_);
 	GetDeviceContext()->VSSetShader(ShaderManager::GetVertexShader(TEST_VERTEX_SHADER).vertexShader_, nullptr, 0);
 	GetDeviceContext()->PSSetShader(ShaderManager::GetPixelShader(TEST_PIXEL_SHADER).pixelShader_, nullptr, 0);
-	GetDeviceContext()->DrawIndexed((mesh_->GetPolygonCount()) * 3, 0, 0);
+	GetDeviceContext()->DrawIndexed(index_.size(), 0, 0);
 	GetDeviceContext()->RSSetState(nullptr);
 
 #ifdef _DEBUG
@@ -139,6 +155,9 @@ void FBXModel::Draw() {
 	ImGui::SliderFloat("RoationX: ", &rotation_.x, -10.0, 10.0);
 	ImGui::SliderFloat("RotationY: ", &rotation_.y, -10.0, 10.0);
 	ImGui::SliderFloat("RotationZ: ", &rotation_.z, -10.0, 10.0);
+	ImGui::SliderFloat("ScaleX: ", &scale_.x, 0, 10.0);
+	ImGui::SliderFloat("ScaleY: ", &scale_.y, 0, 10.0);
+	ImGui::SliderFloat("ScaleZ: ", &scale_.z, 0, 10.0);
 	ImGui::End();
 #endif
 }
