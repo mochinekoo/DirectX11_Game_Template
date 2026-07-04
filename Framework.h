@@ -3,5 +3,5 @@
 
 namespace GameLib {
 
-	HWND GetWindowHandle();
+	HWND GetGameWindowHandle();
 }
