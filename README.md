@@ -3,4 +3,4 @@
 
 # ライブラリ
 * ImGUI ( [license](https://github.com/mochinekoo/DirectX11_Game_Template/blob/main/LICENSE) )
-* fbxsdk ( [license](https://github.com/mochinekoo/DirectX11_Game_Template/blob/main/license) )
+* fbxsdk ( [license](https://github.com/mochinekoo/DirectX11_Game_Template/blob/main/fbxsdk_License) )
