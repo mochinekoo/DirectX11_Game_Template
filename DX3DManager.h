@@ -17,6 +17,7 @@ struct ConstantBuffer {
 	DirectX::XMMATRIX wvpMatrix_ = {};
 	DirectX::XMFLOAT4 diffuse_ = {};
 	DirectX::XMFLOAT4 ambient_ = {};
+	int hasTexture_ = FALSE;
 };
 
 namespace DX3DManager {

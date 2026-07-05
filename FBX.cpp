@@ -33,6 +33,7 @@ void FBX::Update() {
 		constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
 		constantBuffer.diffuse_ = materialList_[i].diffuse_;
 		constantBuffer.ambient_ = materialList_[i].ambient_;
+		constantBuffer.hasTexture_ = (materialList_[i].texture_ != nullptr);
 		GetDeviceContext()->UpdateSubresource(constantBufferList_[i], 0, nullptr, &constantBuffer, 0, 0);
 	}
 }
@@ -40,6 +41,7 @@ void FBX::Update() {
 void FBX::Draw() {
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
+	
 
 	GetDeviceContext()->PSSetShader(pixelShader_, nullptr, 0);
 	GetDeviceContext()->VSSetShader(vertexShader_, nullptr, 0);
@@ -52,6 +54,18 @@ void FBX::Draw() {
 		GetDeviceContext()->IASetIndexBuffer(indexBuffer_[i], DXGI_FORMAT_R32_UINT, 0);
 		GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBufferList_[i]);
 		GetDeviceContext()->PSSetConstantBuffers(0, 1, &constantBufferList_[i]);
+
+		Texture* texture = materialList_[i].texture_;
+		if (texture != nullptr) {
+			ID3D11ShaderResourceView* textureSrv = texture->GetShaderResourceView();
+			ID3D11SamplerState* sampler = texture->GetSamplerState();
+			GetDeviceContext()->PSSetShaderResources(0, 1, &textureSrv);
+			GetDeviceContext()->PSSetSamplers(0, 1, &sampler);
+		}
+		else {
+			ID3D11ShaderResourceView* nullSrv = { nullptr };
+			GetDeviceContext()->PSSetShaderResources(0, 1, &nullSrv);
+		}
 		GetDeviceContext()->DrawIndexed(materialIndexList_[i].size(), 0, 0);
 	}
 
@@ -114,12 +128,15 @@ void FBX::InitVertexBuffer() {
 
 	for (DWORD polyCount = 0; polyCount < polygonCount_; polyCount++) {
 		for (int vertexCount = 0; vertexCount < 3; vertexCount++) {
-			int index = mesh_->GetPolygonVertex(polyCount, vertexCount);
-			FbxVector4 vertexLoc = mesh_->GetControlPointAt(index);
+			int vertexIndex = mesh_->GetPolygonVertex(polyCount, vertexCount);
+			FbxVector4 vertexLoc = mesh_->GetControlPointAt(vertexIndex);
+			int uvIndex = mesh_->GetTextureUVIndex(polyCount, vertexCount);
+			FbxLayerElementUV* uvLayer = mesh_->GetLayer(0)->GetUVs();
+			FbxVector2 uvLoc = uvLayer->GetDirectArray().GetAt(uvIndex);
 			Vertex vertex = {};
 			vertex.location_ = {(float) vertexLoc[0], (float)vertexLoc[1], (float)vertexLoc[2]};
 			vertex.color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
-			vertex.uv_ = {};
+			vertex.uv_ = { (float)uvLoc.mData[0], (float)(1.0f - uvLoc.mData[1])};
 			vertexList_.push_back(vertex);
 		}
 	}
@@ -188,6 +205,13 @@ void FBX::InitMaterial() {
 		Material materialData = {};
 		materialData.diffuse_ = { (float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f };
 		materialData.ambient_ = { (float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f };
+
+		if (textureCount > 0) {
+			FbxFileTexture* fileTexture = property.GetSrcObject<FbxFileTexture>();
+			Texture* texture = new Texture(fileTexture->GetFileName());
+			texture->Init();
+			materialData.texture_ = texture;
+		}
 
 		materialList_[i] = materialData;
 	}

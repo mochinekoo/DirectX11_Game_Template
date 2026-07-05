@@ -29,7 +29,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	InitDX3D();
 	InitImGUI();
 
-	FBX* fbx = new FBX("aa.fbx");
+	FBX* fbx = new FBX("texture.fbx");
 	fbx->Init();
 	fbx->SetTag("Test1");
 

@@ -5,6 +5,7 @@ cbuffer ConstantBuffer : register(b0) {
     matrix wvpMatrix;
     float4 diffuse;
     float4 ambient;
+    int hasTexture;
 };
 
 struct PSInput
@@ -14,7 +15,15 @@ struct PSInput
     float2 uv : TEXCOORD0;
 };
 
-float4 main(PSInput input) : SV_TARGET
-{
-    return input.color;
+float4 main(PSInput input) : SV_TARGET {
+    float4 color = { 1.0f, 0.0f, 0.0f, 1.0f };
+    
+    if (hasTexture == 1) {
+        color = texture0.Sample(sampler0, input.uv);
+    }
+    else {
+        color = diffuse;
+    }
+    
+    return color;
 }

@@ -4,6 +4,7 @@
 #include <vector>
 #include "DX3DManager.h"
 #include "fbxsdk.h"
+#include "Texture.h"
 
 #pragma comment(lib, "LibFbxSDK-MD.lib")
 #pragma comment(lib, "LibXml2-MD.lib")
@@ -13,6 +14,7 @@ struct Material {
 	DirectX::XMFLOAT4 ambient_ = {};
 	DirectX::XMFLOAT4 diffuse_ = {};
 	DirectX::XMFLOAT4 specular_ = {};
+	Texture* texture_ = nullptr;
 };
 
 class FBX : public BaseObject {
