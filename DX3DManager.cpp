@@ -29,6 +29,26 @@ void DX3DManager::InitDX3D() {
 	InitViewPort();
 	InitRasterizer();
 	InitBlend();
+	InitShader();
+}
+
+void DX3DManager::InitShader() {
+	ID3DBlob* vsBlob = nullptr;
+	ID3DBlob* psBlob = nullptr;
+
+	D3DCompileFromFile(L"VertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &vsBlob, nullptr);
+	D3DCompileFromFile(L"PixelShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &psBlob, nullptr);
+
+	device_->CreateVertexShader(vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), nullptr, &vertexShader_);
+	device_->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &pixelShader_);
+
+	D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, offsetof(Vertex, location_), D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, offsetof(Vertex, color_), D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, offsetof(Vertex, uv_), D3D11_INPUT_PER_VERTEX_DATA, 0}
+	};
+
+	device_->CreateInputLayout(inputDesc, _countof(inputDesc), vsBlob->GetBufferPointer(), vsBlob->GetBufferSize(), &inputLayout_);
 }
 
 void DX3DManager::InitDevice() {
