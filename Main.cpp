@@ -1,5 +1,12 @@
 #include <Windows.h>
 #include "DX3DManager.h"
+#include "Framework.h"
+#include "FBX.h"
+#include "ImGUI/imgui.h"
+#include "ImGUI/imgui_impl_win32.h"
+#include "ImGUI/imgui_impl_dx11.h"
+
+#pragma comment(lib, "dxgi.lib")
 
 namespace GameLib {
 	inline HWND mainWindowHandle_ = {};
@@ -12,12 +19,19 @@ namespace GameLib {
 using namespace GameLib;
 using namespace DX3DManager;
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 void InitWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+void InitImGUI();
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	InitWindow(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 	InitDX3D();
+	InitImGUI();
+
+	FBX* fbx = new FBX("aa.fbx");
+	fbx->Init();
+	fbx->SetTag("Test1");
 
 	MSG msg = {};
 	while (msg.message != WM_QUIT) {
@@ -32,6 +46,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			GetDeviceContext()->OMSetRenderTargets(1, &renderTargetView, GetDepthView());
 			GetDeviceContext()->ClearRenderTargetView(renderTargetView,  BACKGROUND_COLOR);
 			GetDeviceContext()->ClearDepthStencilView(GetDepthView(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+			ImGuiIO& io = ImGui::GetIO();
+			ImGui_ImplDX11_NewFrame();
+			ImGui_ImplWin32_NewFrame();
+			ImGui::NewFrame();
+
+			fbx->Update();
+			fbx->Draw();
+
+			ImGui::EndFrame();
+			ImGui::Render();
+			ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+			if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+				ImGui::UpdatePlatformWindows();
+				ImGui::RenderPlatformWindowsDefault();
+			}
 
 			GetSwapChain()->Present(1, 0);
 		}
@@ -70,6 +100,10 @@ void InitWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, i
 }
 
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, message, wParam, lParam)) {
+		return true;
+	}
+
 	switch (message) {
 		case WM_DESTROY: {
 			PostQuitMessage(0);
@@ -77,4 +111,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		}
 	}
 	return DefWindowProc(hwnd, message, wParam, lParam);
+}
+
+void InitImGUI() {
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+	ImGui::StyleColorsDark();
+	ImGui_ImplWin32_Init(mainWindowHandle_);
+	ID3D11Device* device = (ID3D11Device*)GetDevice();
+	ID3D11DeviceContext* deviceContext = (ID3D11DeviceContext*)GetDeviceContext();
+	ImGui_ImplDX11_Init(device, deviceContext);
 }
