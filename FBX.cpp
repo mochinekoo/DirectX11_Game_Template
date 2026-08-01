@@ -134,7 +134,7 @@ void FBX::InitVertexBuffer() {
 			FbxLayerElementUV* uvLayer = mesh_->GetLayer(0)->GetUVs();
 			FbxVector2 uvLoc = uvLayer->GetDirectArray().GetAt(uvIndex);
 			Vertex vertex = {};
-			vertex.location_ = {(float) vertexLoc[0], (float)vertexLoc[1], (float)vertexLoc[2]};
+			vertex.location_ = {(float) vertexLoc[0], (float)vertexLoc[2], (float)vertexLoc[1]};
 			vertex.color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 			vertex.uv_ = { (float)uvLoc.mData[0], (float)(1.0f - uvLoc.mData[1])};
 			vertexList_.push_back(vertex);
