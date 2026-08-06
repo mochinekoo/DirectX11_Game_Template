@@ -22,10 +22,6 @@ struct ConstantBuffer {
 
 namespace DX3DManager {
 
-	inline ID3D11PixelShader* pixelShader_ = nullptr;
-	inline ID3D11VertexShader* vertexShader_ = nullptr;
-	inline ID3D11InputLayout* inputLayout_ = nullptr;
-
 	void InitDX3D();
 	void InitShader();
 	void InitDevice();

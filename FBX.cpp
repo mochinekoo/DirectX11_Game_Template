@@ -4,6 +4,7 @@
 #include "DX3DManager.h"
 #include "ImGUI/imgui.h"
 #include <unordered_map>
+#include "ShaderManager.h"
 
 using namespace fbxsdk;
 using namespace DX3DManager;
@@ -92,9 +93,9 @@ void FBX::Draw() {
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	GetDeviceContext()->PSSetShader(pixelShader_, nullptr, 0);
-	GetDeviceContext()->VSSetShader(vertexShader_, nullptr, 0);
-	GetDeviceContext()->IASetInputLayout(inputLayout_);
+	ShaderManager::SetPixelShader("PixelShader.hlsl");
+	ShaderManager::SetVertexShader("VertexShader.hlsl");
+
 	GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer_, &stride, &offset);
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	GetDeviceContext()->RSSetState(GetRasterizerState());
