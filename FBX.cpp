@@ -123,18 +123,90 @@ void FBX::Draw() {
 
 	std::string title = GetName() + "(" + GetTag() + ")";
 	ImGui::Begin(title.c_str());
-	ImGui::SliderFloat("Location X", &location_.x, -10.0f, 10.0f);
-	ImGui::SliderFloat("Location Y", &location_.y, -10.0f, 10.0f);
-	ImGui::SliderFloat("Location Z", &location_.z, -10.0f, 10.0f);
-	ImGui::SliderFloat("Velocity X", &velocity_.x, -10.0f, 10.0f);
-	ImGui::SliderFloat("Velocity Y", &velocity_.y, -10.0f, 10.0f);
-	ImGui::SliderFloat("Velocity Z", &velocity_.z, -10.0f, 10.0f);
-	ImGui::SliderFloat("Rotation X", &rotation_.x, -DirectX::XM_PI, DirectX::XM_PI);
-	ImGui::SliderFloat("Rotation Y", &rotation_.y, -DirectX::XM_PI, DirectX::XM_PI);
-	ImGui::SliderFloat("Rotation Z", &rotation_.z, -DirectX::XM_PI, DirectX::XM_PI);
-	ImGui::SliderFloat("Scale X", &scale_.x, 0.1f, 10.0f);
-	ImGui::SliderFloat("Scale Y", &scale_.y, 0.1f, 10.0f);
-	ImGui::SliderFloat("Scale Z", &scale_.z, 0.1f, 10.0f);
+
+	if (ImGui::BeginTabBar("Tab")) {
+		if (ImGui::BeginTabItem("ObjectInfo")) {
+			ImGui::SliderFloat("Location X", &location_.x, -10.0f, 10.0f);
+			ImGui::SliderFloat("Location Y", &location_.y, -10.0f, 10.0f);
+			ImGui::SliderFloat("Location Z", &location_.z, -10.0f, 10.0f);
+			ImGui::SliderFloat("Velocity X", &velocity_.x, -10.0f, 10.0f);
+			ImGui::SliderFloat("Velocity Y", &velocity_.y, -10.0f, 10.0f);
+			ImGui::SliderFloat("Velocity Z", &velocity_.z, -10.0f, 10.0f);
+			ImGui::SliderFloat("Rotation X", &rotation_.x, -DirectX::XM_PI, DirectX::XM_PI);
+			ImGui::SliderFloat("Rotation Y", &rotation_.y, -DirectX::XM_PI, DirectX::XM_PI);
+			ImGui::SliderFloat("Rotation Z", &rotation_.z, -DirectX::XM_PI, DirectX::XM_PI);
+			ImGui::SliderFloat("Scale X", &scale_.x, 0.1f, 10.0f);
+			ImGui::SliderFloat("Scale Y", &scale_.y, 0.1f, 10.0f);
+			ImGui::SliderFloat("Scale Z", &scale_.z, 0.1f, 10.0f);
+
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("FBXInfo")) {
+			FbxMesh* mesh = node_->GetMesh();
+			FbxLight* light = node_->GetLight();
+
+			ImGui::Text("FBX Name: %s", fileName_.c_str());
+			ImGui::Text("Light Name: %s", light == nullptr ? "(nullptr)" : light->GetName());
+
+			if (ImGui::CollapsingHeader("Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::Text("Mesh Name: %s", mesh == nullptr ? "(nullptr)" : mesh->GetName());
+				if (mesh != nullptr) {
+					ImGui::Text("Control Point Count: %d", mesh->GetControlPointsCount());
+					ImGui::Text("Polygon Count: %d", mesh_->GetPolygonCount());
+				}
+			}
+
+			if (ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::Text("Material Count %d", node_->GetMaterialCount());
+				for (int i = 0; i < node_->GetMaterialCount(); i++) {
+					FbxSurfaceMaterial* material = node_->GetMaterial(i);
+					FbxProperty property = material->FindProperty(FbxSurfaceMaterial::sDiffuse);
+					int textureCount = property.GetSrcObjectCount<FbxFileTexture>();
+					FbxSurfaceLambert* lambartMaterial = (FbxSurfaceLambert*)node_->GetMaterial(i);
+					FbxDouble3 diffuse = lambartMaterial->Diffuse;
+					FbxDouble3 ambient = lambartMaterial->Ambient;
+
+					std::string title = "Material" + std::to_string(i);
+					if (ImGui::TreeNode(title.c_str())) {
+						ImGui::Text("Material Name: %s", material->GetName());
+						ImGui::Text("Material Diffuse Color: (%2.2f, %2.2f, %2.2f)", diffuse[0], diffuse[1], diffuse[2]);
+						ImGui::Text("Material Ambient Color: (%2.2f, %2.2f, %2.2f)", ambient[0], ambient[1], ambient[2]);
+
+						ImGui::TreePop();
+					}
+				}
+			}
+
+			if (ImGui::CollapsingHeader("Skin", ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::Text("Skin Name: %s", skin_ == nullptr ? "(nullptr)" : skin_->GetName());
+				if (skin_ != nullptr) {
+					ImGui::Text("Cluster Count: %d", skin_->GetClusterCount());
+					for (int i = 0; i < skin_->GetClusterCount(); i++) {
+						std::string title = "Skin" + std::to_string(i);
+						if (ImGui::TreeNode(title.c_str())) {
+							FbxCluster* cluster = skin_->GetCluster(i);
+							int controlPointCount = clusterList_[i]->GetControlPointIndicesCount();
+							int* controlPointIndices = clusterList_[i]->GetControlPointIndices();
+							double* weights = clusterList_[i]->GetControlPointWeights();
+
+							for (int a = 0; a < controlPointCount; a++) {
+								int indices = controlPointIndices[a];
+								double weight = weights[a];
+								ImGui::Text("Control Point Index: %d, Weight: %2.2f", indices, weight);
+							}
+
+							ImGui::TreePop();
+						}
+					}
+				}
+			}
+
+
+			ImGui::EndTabItem();
+		}
+	}
+	ImGui::EndTabBar();
+
 	ImGui::End();
 
 }

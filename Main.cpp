@@ -122,4 +122,11 @@ void InitImGUI() {
 	ID3D11Device* device = (ID3D11Device*)GetDevice();
 	ID3D11DeviceContext* deviceContext = (ID3D11DeviceContext*)GetDeviceContext();
 	ImGui_ImplDX11_Init(device, deviceContext);
+
+	io.Fonts->AddFontFromFileTTF(
+		"C:/Windows/Fonts/meiryo.ttc",
+		18.0f,
+		nullptr,
+		io.Fonts->GetGlyphRangesJapanese()
+	);
 }
