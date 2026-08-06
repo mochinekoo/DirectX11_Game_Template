@@ -3,6 +3,7 @@
 #include "fbxsdk.h"
 #include "DX3DManager.h"
 #include "ImGUI/imgui.h"
+#include <unordered_map>
 
 using namespace fbxsdk;
 using namespace DX3DManager;
@@ -39,9 +40,57 @@ void FBX::Update() {
 }
 
 void FBX::Draw() {
+	if (animation_) {
+
+		if (fbxTime_.GetFrameCount() > maxFrame_) {
+			fbxTime_.SetFrame(0);
+		}
+		fbxTime_.SetFrame(fbxTime_.GetFrameCount() + 1);
+
+		for (int i = 0; i < clusterCount_; i++) {
+			FbxAnimEvaluator* evaluator = clusterList_[i]->GetLink()->GetScene()->GetAnimationEvaluator();
+			FbxMatrix currentAnimLocation = evaluator->GetNodeGlobalTransform(clusterList_[i]->GetLink(), fbxTime_);
+
+			XMFLOAT4X4 postion = {};
+			for (int x = 0; x < 4; x++) {
+				for (int y = 0; y < 4; y++) {
+					postion.m[x][y] = (float)currentAnimLocation.Get(x, y);
+				}
+			}
+
+			XMFLOAT4X4 offset = {};
+			XMMATRIX mirror = XMMatrixIdentity();
+			XMStoreFloat4x4(&offset, mirror);
+			offset.m[2][2] = -1.0f;
+			mirror = XMLoadFloat4x4(&offset);
+
+			boneList_[i].newBoneMatrix_ = XMLoadFloat4x4(&postion) * mirror;
+			boneList_[i].differenceMatrix_ = boneList_[i].newBoneMatrix_ * XMMatrixInverse(nullptr, boneList_[i].offsetMatrix_);
+		}
+
+		for (int i = 0; i < vertexCount_; i++) {
+			XMMATRIX matrix = {};
+			for (int m = 0; m < clusterCount_; m++) {
+				if (weightList_[i].boneIndex_[m] < 0) {
+					break;
+				}
+				matrix += boneList_[weightList_[i].boneIndex_[m]].differenceMatrix_ * weightList_[i].boneWeight_[m];
+			}
+
+			XMVECTOR location = XMLoadFloat3(&weightList_[i].location_);
+			XMStoreFloat3(&vertexList_[i].location_, XMVector3TransformCoord(location, matrix));
+		}
+
+		D3D11_MAPPED_SUBRESOURCE mappedResource = {};
+		DX3DManager::GetDeviceContext()->Map(vertexBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		if (mappedResource.pData) {
+			memcpy_s(mappedResource.pData, sizeof(Vertex) * vertexCount_, vertexList_.data(), sizeof(Vertex) * vertexCount_);
+			DX3DManager::GetDeviceContext()->Unmap(vertexBuffer_, 0);
+		}
+	}
+
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
-	
 
 	GetDeviceContext()->PSSetShader(pixelShader_, nullptr, 0);
 	GetDeviceContext()->VSSetShader(vertexShader_, nullptr, 0);
@@ -138,14 +187,17 @@ void FBX::InitVertexBuffer() {
 			vertex.color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 			vertex.uv_ = { (float)uvLoc.mData[0], (float)(1.0f - uvLoc.mData[1])};
 			vertexList_.push_back(vertex);
+
+			indexVertexList_.push_back(vertexIndex);
 		}
 	}
 	vertexCount_ = vertexList_.size();
 
 	D3D11_BUFFER_DESC vertexDesc = {};
-	vertexDesc.Usage = D3D11_USAGE_DEFAULT;
+	vertexDesc.Usage = D3D11_USAGE_DYNAMIC;
 	vertexDesc.ByteWidth = sizeof(Vertex) * vertexCount_;
 	vertexDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
 	D3D11_SUBRESOURCE_DATA vertexData = {};
 	vertexData.pSysMem = vertexList_.data();
@@ -219,5 +271,74 @@ void FBX::InitMaterial() {
 
 void FBX::InitBone() {
 	FbxDeformer* deformer = mesh_->GetDeformer(0, FbxDeformer::eSkin);
+	if (deformer == nullptr) {
+		hasAnimation_ = false;
+		return;
+	}
+	hasAnimation_ = true;
 	skin_ = (FbxSkin*)deformer;
+	clusterCount_ = skin_->GetClusterCount();
+
+	for (int i = 0; i < vertexCount_; i++) {
+		Weight weight = {};
+		weight.location_ = vertexList_[i].location_;
+		weight.boneIndex_.resize(clusterCount_, -1);
+		weight.boneWeight_.resize(clusterCount_, 0.0f);
+
+		weightList_.push_back(weight);
+	}
+
+	std::unordered_map<int, std::vector<int>> vertexToClusterMap;
+	vertexToClusterMap.reserve(vertexCount_);
+	for (int i = 0; i < (int) indexVertexList_.size(); i++) {
+		int vertexIndex = indexVertexList_[i];
+		vertexToClusterMap[vertexIndex].push_back(i);
+	}
+
+	for (int i = 0; i < clusterCount_; i++) {
+		clusterList_.push_back(skin_->GetCluster(i));
+
+		int controlPointCount = clusterList_[i]->GetControlPointIndicesCount();
+		int* controlPointIndices = clusterList_[i]->GetControlPointIndices();
+		double* weights = clusterList_[i]->GetControlPointWeights();
+
+		for (int a = 0; a < controlPointCount; a++) {
+			int indices = controlPointIndices[a];
+			double weight = weights[a];
+
+			auto vertexIndicesIterator = vertexToClusterMap.find(indices);
+			if (vertexIndicesIterator == vertexToClusterMap.end()) {
+				continue;
+			}
+
+			for (int vertexIndex : vertexIndicesIterator->second) {
+				for (int j = 0; j < 4; j++) {
+					if (j >= clusterCount_) {
+						break;
+					}
+
+					if (weight > weightList_[vertexIndex].boneWeight_[j]) {
+						weightList_[vertexIndex].boneWeight_[j] = (float)weight;
+						weightList_[vertexIndex].boneIndex_[j] = i;
+						break;
+					}
+				}
+			}
+
+		}
+
+		boneList_.resize(clusterCount_);
+		FbxAMatrix transformMatrix = {};
+		clusterList_[i]->GetTransformLinkMatrix(transformMatrix);
+
+		XMFLOAT4X4 offsetMatrix = {};
+		for (int x = 0; x < 4; x++) {
+			for (int y = 0; y < 4; y++) {
+				offsetMatrix.m[x][y] = (float)transformMatrix.Get(x, y);
+			}
+		}
+
+		boneList_[i].offsetMatrix_ = XMLoadFloat4x4(&offsetMatrix);
+		boneMap_[clusterList_[i]->GetLink()->GetName()] = &boneList_[i];
+	}
 }
