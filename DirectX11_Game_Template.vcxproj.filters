@@ -41,6 +41,9 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h" />
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

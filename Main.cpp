@@ -5,6 +5,7 @@
 #include "ImGUI/imgui.h"
 #include "ImGUI/imgui_impl_win32.h"
 #include "ImGUI/imgui_impl_dx11.h"
+#include "ObjectManager.h"
 
 #pragma comment(lib, "dxgi.lib")
 
@@ -29,9 +30,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	InitDX3D();
 	InitImGUI();
 
-	FBX* fbx = new FBX("anime.fbx");
-	fbx->Init();
-	fbx->SetTag("Test1");
+	ObjectManager::AddObject(new FBX("anime.fbx"));
 
 	MSG msg = {};
 	while (msg.message != WM_QUIT) {
@@ -52,8 +51,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ImGui_ImplWin32_NewFrame();
 			ImGui::NewFrame();
 
-			fbx->Update();
-			fbx->Draw();
+			ObjectManager::Update();
 
 			ImGui::EndFrame();
 			ImGui::Render();
