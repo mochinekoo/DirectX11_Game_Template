@@ -13,6 +13,7 @@
 #pragma comment(lib, "mfuuid.lib")
 
 struct SoundData {
+	std::string fileName = "";
 	IMFSourceReader* sourceReader = nullptr;
 	IMFMediaType* mediaType = nullptr;
 	IXAudio2SourceVoice* sourceVoice = nullptr;
@@ -26,4 +27,6 @@ namespace SoundManager {
 	bool Play(const std::string& fileName);
 	bool Stop(const std::string& fileName);
 	bool ChangeVolume(const std::string& fileName, float volume);
+
+	void DrawDebugImGUI();
 }

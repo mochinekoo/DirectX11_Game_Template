@@ -59,6 +59,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ObjectManager::Update();
 
 			DrawDebugImGUI();
+			SoundManager::DrawDebugImGUI();
 
 			ImGui::EndFrame();
 			ImGui::Render();

@@ -1,6 +1,7 @@
 #include "SoundManager.h"
 #include <string>
 #include <map>
+#include "ImGUI/imgui.h"
 
 namespace SoundManager {
 	IXAudio2* xAudio_ = nullptr;
@@ -24,6 +25,7 @@ bool SoundManager::Load(const std::string& fileName, bool loop) {
 
 	SoundData soundData = {};
 	std::wstring wFileName = std::wstring(fileName.begin(), fileName.end());
+    soundData.fileName = fileName;
 	MFCreateSourceReaderFromURL(wFileName.c_str(), nullptr, &soundData.sourceReader);
 	MFCreateMediaType(&soundData.mediaType);
     soundData.mediaType->SetGUID(MF_MT_MAJOR_TYPE, MFMediaType_Audio);
@@ -106,4 +108,18 @@ bool SoundManager::ChangeVolume(const std::string& fileName, float volume) {
     }
 
     return false;
+}
+
+void SoundManager::DrawDebugImGUI() {
+    ImGui::Begin("SoundManager(Debug)");
+    for (const auto& pair : soundMap_) {
+        SoundData soundData = pair.second;
+        if (ImGui::CollapsingHeader(soundData.fileName.c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
+            float volume = 0;
+            soundData.sourceVoice[0].GetVolume(&volume);
+            ImGui::SliderFloat("Volume", &volume, 0.0f, 1.0f);
+            soundData.sourceVoice[0].SetVolume(volume);
+        }
+    }
+    ImGui::End();
 }
