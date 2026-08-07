@@ -47,6 +47,12 @@
     <ClCompile Include="ShaderManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h" />
@@ -101,6 +107,15 @@
     <ClInclude Include="ShaderManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Manager">
@@ -114,6 +129,9 @@
     </Filter>
     <Filter Include="Data">
       <UniqueIdentifier>{2287285c-6e27-42d6-8415-61c4f9969167}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{79b8cb87-80b9-40f3-b9fc-4bf208f9e126}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

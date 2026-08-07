@@ -9,7 +9,17 @@ namespace ObjectManager {
 
 	BaseObject* AddObject(BaseObject* object);
 	void RemoveObject(BaseObject* object);
+
+	/// <summary>
+	/// 全てオブジェクトを取得する関数
+	/// </summary>
+	/// <returns></returns>
 	std::vector<BaseObject*>& GetAllObject();
+
+	/// <summary>
+	/// オブジェクトをすべて削除する関数
+	/// </summary>
+	void ClearAllObject();
 
 	template<typename T> T* FindObject() {
 		auto& allObj = GetAllObject();

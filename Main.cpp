@@ -6,6 +6,7 @@
 #include "ImGUI/imgui_impl_win32.h"
 #include "ImGUI/imgui_impl_dx11.h"
 #include "ObjectManager.h"
+#include "SceneManager.h"
 
 #pragma comment(lib, "dxgi.lib")
 
@@ -24,13 +25,14 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 void InitWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow);
 LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
 void InitImGUI();
+void DrawDebugImGUI();
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	InitWindow(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 	InitDX3D();
 	InitImGUI();
-
-	ObjectManager::AddObject(new FBX("anime.fbx"));
+	ObjectManager::Init();
+	SceneManager::Init();
 
 	MSG msg = {};
 	while (msg.message != WM_QUIT) {
@@ -51,7 +53,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			ImGui_ImplWin32_NewFrame();
 			ImGui::NewFrame();
 
+			SceneManager::Update();
 			ObjectManager::Update();
+
+			DrawDebugImGUI();
 
 			ImGui::EndFrame();
 			ImGui::Render();
@@ -129,4 +134,13 @@ void InitImGUI() {
 		nullptr,
 		io.Fonts->GetGlyphRangesJapanese()
 	);
+}
+
+void DrawDebugImGUI() {
+	BaseScene* currentScene = SceneManager::GetCurrentScene();
+
+	ImGui::Begin("DebugInfo");
+	ImGui::Text("CurrentScene: %s", currentScene == nullptr ? "(nullptr)" : currentScene->GetName().c_str());
+	ImGui::Text("ObjectCount: %d", ObjectManager::GetAllObject().size());
+	ImGui::End();
 }

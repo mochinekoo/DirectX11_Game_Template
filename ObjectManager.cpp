@@ -43,3 +43,7 @@ void ObjectManager::RemoveObject(BaseObject* object) {
 std::vector<BaseObject*>& ObjectManager::GetAllObject() {
 	return objectList_;
 }
+
+void ObjectManager::ClearAllObject() {
+	objectList_.clear();
+}
