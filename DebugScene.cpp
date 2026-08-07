@@ -1,9 +1,12 @@
-#include "DebugScene.h"
+﻿#include "DebugScene.h"
 #include "ObjectManager.h"
 #include "FBX.h"
+#include "SoundManager.h"
 
 void DebugScene::Init() {
 	ObjectManager::AddObject(new FBX("anime.fbx"));
+	SoundManager::Load("Bossa_Latte.mp3");
+	SoundManager::Play("Bossa_Latte.mp3");
 }
 
 void DebugScene::Update() {

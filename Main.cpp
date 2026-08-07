@@ -7,6 +7,7 @@
 #include "ImGUI/imgui_impl_dx11.h"
 #include "ObjectManager.h"
 #include "SceneManager.h"
+#include "SoundManager.h"
 
 #pragma comment(lib, "dxgi.lib")
 
@@ -31,6 +32,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	InitWindow(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
 	InitDX3D();
 	InitImGUI();
+	SoundManager::Init();
 	ObjectManager::Init();
 	SceneManager::Init();
 

@@ -146,6 +146,7 @@
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +170,7 @@
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>

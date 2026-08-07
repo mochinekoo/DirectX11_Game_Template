@@ -53,6 +53,9 @@
     <ClCompile Include="DebugScene.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h" />
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="DebugScene.h">
       <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
