@@ -122,7 +122,7 @@ void FBX::Draw() {
 	GetDeviceContext()->RSSetState(nullptr);
 
 	std::string title = GetName() + "(" + GetTag() + ")";
-	ImGui::Begin(title.c_str());
+	ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoDocking);
 
 	if (ImGui::BeginTabBar("Tab")) {
 		if (ImGui::BeginTabItem("ObjectInfo")) {
