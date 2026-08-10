@@ -22,6 +22,6 @@ public:
 	void Draw() override;
 	void Release() override;
 
-
+	std::string GetFileName() const { return texture_->GetFileName(); }
 };
 

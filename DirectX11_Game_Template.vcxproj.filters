@@ -57,6 +57,9 @@
       <Filter>Data</Filter>
     </ClCompile>
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="ImageManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h" />
@@ -124,6 +127,9 @@
       <Filter>Data</Filter>
     </ClInclude>
     <ClInclude Include="Image.h" />
+    <ClInclude Include="ImageManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Manager">
