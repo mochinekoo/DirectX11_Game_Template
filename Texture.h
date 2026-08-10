@@ -8,7 +8,7 @@
 #include "DX3DManager.h"
 #include <vector>
 
-class Texture : public BaseObject {
+class Texture {
 private:
 	std::string fileName_;
 	UINT width_, height_;
@@ -25,8 +25,7 @@ private:
 	std::vector<Vertex> vertexList_;
 public:
 
-	Texture(const std::string& fileName)
-		: BaseObject("Texture") {
+	Texture(const std::string& fileName) {
 		fileName_ = fileName;
 		width_ = 0;
 		height_ = 0;
@@ -44,10 +43,7 @@ public:
 
 	~Texture() {}
 
-	void Init() override;
-	void Update() override;
-	void Draw() override;
-	void Release() override;
+	void Init();
 
 	void InitWIC();
 	void InitTexture();
@@ -57,4 +53,9 @@ public:
 
 	ID3D11SamplerState* GetSamplerState() const { return samplerState_; }
 	ID3D11ShaderResourceView* GetShaderResourceView() const { return shaderResourceView_; }
+
+	ID3D11Buffer* GetConstanctBuffer() const { return constantBuffer_; }
+	ID3D11Buffer* GetVertexBuffer() const { return vertexBuffer_; }
+
+
 };

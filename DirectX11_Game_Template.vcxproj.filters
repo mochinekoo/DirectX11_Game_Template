@@ -38,9 +38,6 @@
     <ClCompile Include="ImGUI\imgui_widgets.cpp">
       <Filter>ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="ObjectManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
@@ -56,6 +53,10 @@
     <ClCompile Include="SoundManager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework.h" />
@@ -101,9 +102,6 @@
     <ClInclude Include="ImGUI\imstb_truetype.h">
       <Filter>ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="ObjectManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
@@ -122,6 +120,10 @@
     <ClInclude Include="SoundManager.h">
       <Filter>Manager</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Manager">

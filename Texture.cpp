@@ -19,30 +19,6 @@ void Texture::Init() {
 	InitVertexBuffer();
 }
 
-void Texture::Update() {
-
-}
-
-void Texture::Draw() {
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-
-	ShaderManager::SetPixelShader("PixelShader.hlsl");
-	ShaderManager::SetVertexShader("VertexShader.hlsl");
-	GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer_, &stride, &offset);
-	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	GetDeviceContext()->RSSetState(GetRasterizerState());
-
-	GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBuffer_);
-	GetDeviceContext()->PSSetConstantBuffers(0, 1, &constantBuffer_);
-
-	GetDeviceContext()->RSSetState(nullptr);
-}
-
-void Texture::Release()
-{
-}
-
 void Texture::InitWIC() {
 	std::wstring wFileName(fileName_.begin(), fileName_.end());
 	CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&imagingFactory_));
@@ -103,7 +79,7 @@ void Texture::InitVertexBuffer() {
 
 	D3D11_BUFFER_DESC vertexDesc = {};
 	vertexDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexDesc.ByteWidth = sizeof(vertexList_);
+	vertexDesc.ByteWidth = sizeof(Vertex) * vertexList_.size();
 	vertexDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexDesc.CPUAccessFlags = 0;
 	vertexDesc.MiscFlags = 0;

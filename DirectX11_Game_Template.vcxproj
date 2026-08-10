@@ -132,6 +132,7 @@
     <ClCompile Include="DebugScene.cpp" />
     <ClCompile Include="DX3DManager.cpp" />
     <ClCompile Include="FBX.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImGUI\imgui.cpp" />
     <ClCompile Include="ImGUI\imgui_demo.cpp" />
     <ClCompile Include="ImGUI\imgui_draw.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="DX3DManager.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="FBX.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="ImGUI\imconfig.h" />
     <ClInclude Include="ImGUI\imgui.h" />
     <ClInclude Include="ImGUI\imgui_impl_dx10.h" />
