@@ -35,18 +35,10 @@ void ImageManager::Draw(const int id) {
 	imageList_[id]->Draw();
 }
 
-void ImageManager::SetPostion(const int id, const DirectX::XMFLOAT3 postion) {
-
+Transform ImageManager::GetTransform(const int id) {
+	return imageList_[id]->GetTransform();
 }
 
-void ImageManager::SetVelocity(const int id, const DirectX::XMFLOAT3 velocity)
-{
-}
-
-void ImageManager::SetRotation(const int id, const DirectX::XMFLOAT3 rote)
-{
-}
-
-void ImageManager::SetScale(const int id, const DirectX::XMFLOAT3 scale)
-{
+void ImageManager::SetTransform(const int id, const Transform& transform) {
+	imageList_[id]->SetTransform(transform);
 }
