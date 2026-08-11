@@ -175,6 +175,8 @@ void FBX::Draw() {
 			}
 
 			if (ImGui::CollapsingHeader("Skin", ImGuiTreeNodeFlags_DefaultOpen)) {
+				float frame = fbxTime_.GetFrameCount();
+				ImGui::SliderFloat("FbxTime Frame", &frame, 0, 60);
 				ImGui::Text("Skin Name: %s", skin_ == nullptr ? "(nullptr)" : skin_->GetName());
 				if (skin_ != nullptr) {
 					ImGui::Text("Cluster Count: %d", skin_->GetClusterCount());
@@ -196,6 +198,8 @@ void FBX::Draw() {
 						}
 					}
 				}
+
+				fbxTime_.SetFrame(frame);
 			}
 
 
