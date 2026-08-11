@@ -20,10 +20,7 @@ void FBX::Init() {
 } 
 
 void FBX::Update() {
-	XMMATRIX scale = XMMatrixScaling(scale_.x, scale_.y, scale_.z);
-	XMMATRIX rotation = XMMatrixRotationRollPitchYaw(rotation_.x, rotation_.y, rotation_.z);
-	XMMATRIX translation = XMMatrixTranslation(location_.x, location_.y, location_.z);
-	XMMATRIX world = scale * rotation * translation;
+	XMMATRIX world = transform_.GetWorldMatrix();
 	XMVECTOR eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
 	XMVECTOR at = XMVectorSet(0.0f, 2.0f, 0.0f, 0.0f);
 	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -126,18 +123,18 @@ void FBX::Draw() {
 
 	if (ImGui::BeginTabBar("Tab")) {
 		if (ImGui::BeginTabItem("ObjectInfo")) {
-			ImGui::SliderFloat("Location X", &location_.x, -10.0f, 10.0f);
-			ImGui::SliderFloat("Location Y", &location_.y, -10.0f, 10.0f);
-			ImGui::SliderFloat("Location Z", &location_.z, -10.0f, 10.0f);
-			ImGui::SliderFloat("Velocity X", &velocity_.x, -10.0f, 10.0f);
-			ImGui::SliderFloat("Velocity Y", &velocity_.y, -10.0f, 10.0f);
-			ImGui::SliderFloat("Velocity Z", &velocity_.z, -10.0f, 10.0f);
-			ImGui::SliderFloat("Rotation X", &rotation_.x, -DirectX::XM_PI, DirectX::XM_PI);
-			ImGui::SliderFloat("Rotation Y", &rotation_.y, -DirectX::XM_PI, DirectX::XM_PI);
-			ImGui::SliderFloat("Rotation Z", &rotation_.z, -DirectX::XM_PI, DirectX::XM_PI);
-			ImGui::SliderFloat("Scale X", &scale_.x, 0.1f, 10.0f);
-			ImGui::SliderFloat("Scale Y", &scale_.y, 0.1f, 10.0f);
-			ImGui::SliderFloat("Scale Z", &scale_.z, 0.1f, 10.0f);
+			ImGui::SliderFloat("Location X", &transform_.location_.x, -10.0f, 10.0f);
+			ImGui::SliderFloat("Location Y", &transform_.location_.y, -10.0f, 10.0f);
+			ImGui::SliderFloat("Location Z", &transform_.location_.z, -10.0f, 10.0f);
+			ImGui::SliderFloat("Velocity X", &transform_.velocity_.x, -10.0f, 10.0f);
+			ImGui::SliderFloat("Velocity Y", &transform_.velocity_.y, -10.0f, 10.0f);
+			ImGui::SliderFloat("Velocity Z", &transform_.velocity_.z, -10.0f, 10.0f);
+			ImGui::SliderFloat("Rotation X", &transform_.rotation_.x, -DirectX::XM_PI, DirectX::XM_PI);
+			ImGui::SliderFloat("Rotation Y", &transform_.rotation_.y, -DirectX::XM_PI, DirectX::XM_PI);
+			ImGui::SliderFloat("Rotation Z", &transform_.rotation_.z, -DirectX::XM_PI, DirectX::XM_PI);
+			ImGui::SliderFloat("Scale X", &transform_.scale_.x, 0.1f, 10.0f);
+			ImGui::SliderFloat("Scale Y", &transform_.scale_.y, 0.1f, 10.0f);
+			ImGui::SliderFloat("Scale Z", &transform_.scale_.z, 0.1f, 10.0f);
 
 			ImGui::EndTabItem();
 		}

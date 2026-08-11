@@ -56,9 +56,11 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageManager.cpp">
       <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Image.cpp">
+      <Filter>Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -126,9 +128,14 @@
     <ClInclude Include="Texture.h">
       <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="Image.h" />
     <ClInclude Include="ImageManager.h">
       <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Transform.h">
+      <Filter>Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Image.h">
+      <Filter>Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
