@@ -8,6 +8,8 @@
 #include "ObjectManager.h"
 #include "SceneManager.h"
 #include "SoundManager.h"
+#include "Camera.h"
+#include "CameraManager.h"
 
 #pragma comment(lib, "dxgi.lib")
 
@@ -35,6 +37,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	SoundManager::Init();
 	ObjectManager::Init();
 	SceneManager::Init();
+	CameraManager::Init();
 
 	MSG msg = {};
 	while (msg.message != WM_QUIT) {
@@ -141,9 +144,18 @@ void InitImGUI() {
 
 void DrawDebugImGUI() {
 	BaseScene* currentScene = SceneManager::GetCurrentScene();
+	Camera* currentCamera = CameraManager::GetCurrentCamera();
 
 	ImGui::Begin("DebugInfo");
 	ImGui::Text("CurrentScene: %s", currentScene == nullptr ? "(nullptr)" : currentScene->GetName().c_str());
 	ImGui::Text("ObjectCount: %d", ObjectManager::GetAllObject().size());
+	ImGui::Text("CurrentCamera: %s", currentCamera == nullptr ? "(nullptr)" : currentCamera->GetName().c_str());
+	ImGui::SliderFloat("Camera Postion X", &currentCamera->postion_.x, 0.0f, 10.0f);
+	ImGui::SliderFloat("Camera Postion Y", &currentCamera->postion_.y, 0.0f, 10.0f);
+	ImGui::SliderFloat("Camera Postion Z", &currentCamera->postion_.z, 0.0f, 10.0f);
+	ImGui::SliderFloat("Camera Target X", &currentCamera->target_.x, 0.0f, 10.0f);
+	ImGui::SliderFloat("Camera Target Y", &currentCamera->target_.y, 0.0f, 10.0f);
+	ImGui::SliderFloat("Camera Target Z", &currentCamera->target_.z, 0.0f, 10.0f);
+
 	ImGui::End();
 }

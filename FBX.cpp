@@ -5,6 +5,8 @@
 #include "ImGUI/imgui.h"
 #include <unordered_map>
 #include "ShaderManager.h"
+#include "Camera.h"
+#include "CameraManager.h"
 
 using namespace fbxsdk;
 using namespace DX3DManager;
@@ -20,12 +22,10 @@ void FBX::Init() {
 } 
 
 void FBX::Update() {
+	Camera* currentCamera = CameraManager::GetCurrentCamera();
 	XMMATRIX world = transform_.GetWorldMatrix();
-	XMVECTOR eye = XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f);
-	XMVECTOR at = XMVectorSet(0.0f, 2.0f, 0.0f, 0.0f);
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	XMMATRIX view = XMMatrixLookAtLH(eye, at, up);
-	XMMATRIX projection = XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(60.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
+	XMMATRIX view = currentCamera->GetViewMatrix();
+	XMMATRIX projection = currentCamera->GetProjection();
 
 	for (int i = 0; i < materialCount_; i++) {
 		ConstantBuffer constantBuffer = {};

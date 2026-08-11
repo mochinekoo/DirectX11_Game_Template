@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraManager.cpp" />
     <ClCompile Include="DebugScene.cpp" />
     <ClCompile Include="DX3DManager.cpp" />
     <ClCompile Include="FBX.cpp" />
@@ -154,6 +155,8 @@
   <ItemGroup>
     <ClInclude Include="BaseObject.h" />
     <ClInclude Include="BaseScene.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraManager.h" />
     <ClInclude Include="DebugScene.h" />
     <ClInclude Include="DX3DManager.h" />
     <ClInclude Include="Framework.h" />
