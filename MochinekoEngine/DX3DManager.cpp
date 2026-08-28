@@ -35,8 +35,10 @@ void DX3DManager::InitDX3D() {
 
 void DX3DManager::InitShader() {
 	ShaderManager::Init();
+	SetCurrentDirectory("MochinekoEngine");
 	ShaderManager::AddShader(ShaderType::PIXEL_SHADER, "PixelShader.hlsl");
 	ShaderManager::AddShader(ShaderType::VERTEX_SHADER, "VertexShader.hlsl");
+	SetCurrentDirectory("../");
 }
 
 void DX3DManager::InitDevice() {
