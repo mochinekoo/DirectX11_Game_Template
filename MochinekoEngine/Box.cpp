@@ -1,17 +1,21 @@
-#include "Image.h"
-#include "ShaderManager.h"
+#include "Box.h"
+#include <d3d11.h>
 #include "DX3DManager.h"
-#include <DirectXMath.h>
+#include "Camera.h"
+#include "ShaderManager.h"
+#include "CameraManager.h"
 #include "ImGUI/imgui.h"
 
-using namespace DX3DManager;
 using namespace DirectX;
+using namespace DX3DManager;
 
-void Image::Init() {
-	texture_->Init();
+void Box::Init() {
+	InitVertexBuffer();
+	InitConstantBuffer();
 }
 
-void Image::Update() {
+void Box::Update() {
+	Camera* currentCamera = CameraManager::GetCurrentCamera();
 	XMMATRIX world = transform_.GetWorldMatrix();
 	XMMATRIX view = XMMatrixIdentity();
 	XMMATRIX projection = XMMatrixOrthographicOffCenterLH(
@@ -22,41 +26,35 @@ void Image::Update() {
 
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
-	constantBuffer.diffuse_ = {};
+	constantBuffer.diffuse_ = color_;
 	constantBuffer.ambient_ = {};
-	constantBuffer.hasTexture_ = TRUE;
-	GetDeviceContext()->UpdateSubresource(texture_->GetConstanctBuffer(), 0, nullptr, &constantBuffer, 0, 0);
+	constantBuffer.hasTexture_ = FALSE;
+	GetDeviceContext()->UpdateSubresource(constantBuffer_, 0, nullptr, &constantBuffer, 0, 0);
 }
 
-void Image::Draw() {
-	auto vertexBuffer = texture_->GetVertexBuffer();
-	auto constantBuffer = texture_->GetConstanctBuffer();
-	auto srv = texture_->GetShaderResourceView();
-	auto samplerState = texture_->GetSamplerState();
-
+void Box::Draw() {
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
 	ShaderManager::SetPixelShader("MochinekoEngine/PixelShader.hlsl");
 	ShaderManager::SetVertexShader("MochinekoEngine/VertexShader.hlsl");
-	GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
+
+	ID3D11ShaderResourceView* nullSrv = { nullptr };
+	GetDeviceContext()->PSSetShaderResources(0, 1, &nullSrv);
+	GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer_, &stride, &offset);
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	GetDeviceContext()->RSSetState(GetRasterizerState());
-	GetDeviceContext()->PSSetShaderResources(0, 1, &srv);
-	GetDeviceContext()->PSSetSamplers(0, 1, &samplerState);
-
-	GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBuffer);
-	GetDeviceContext()->PSSetConstantBuffers(0, 1, &constantBuffer);
+	GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBuffer_);
+	GetDeviceContext()->PSSetConstantBuffers(0, 1, &constantBuffer_);
 
 	GetDeviceContext()->Draw(6, 0);
 
 	GetDeviceContext()->RSSetState(nullptr);
 }
 
-void Image::DrawImGUI() {
+void Box::DrawImGUI() {
 	std::string title = GetName() + "(" + GetTag() + ")";
 	ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoDocking);
-
 	if (ImGui::BeginTabBar("Tab")) {
 		if (ImGui::BeginTabItem("ObjectInfo")) {
 
@@ -81,5 +79,36 @@ void Image::DrawImGUI() {
 	ImGui::End();
 }
 
-void Image::Release() {
+void Box::Release()
+{
+}
+
+
+void Box::InitVertexBuffer() {
+	vertexList_.resize(6);
+	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[1] = { {0.0f, (float) height_, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[2] = { { (float)width_, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[3] = { { (float)width_, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[4] = { { (float) width_,  (float)height_, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[5] = { {0.0f,  (float)height_, 0.0f}, {}, color_, {0.0f, 0.0f} };
+
+	D3D11_BUFFER_DESC vertexDesc = {};
+	vertexDesc.Usage = D3D11_USAGE_DYNAMIC;
+	vertexDesc.ByteWidth = sizeof(Vertex) * vertexList_.size();
+	vertexDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	D3D11_SUBRESOURCE_DATA vertexData = {};
+	vertexData.pSysMem = vertexList_.data();
+
+	GetDevice()->CreateBuffer(&vertexDesc, &vertexData, &vertexBuffer_);
+}
+
+void Box::InitConstantBuffer() {
+	D3D11_BUFFER_DESC constantDesc = {};
+	constantDesc.Usage = D3D11_USAGE_DEFAULT;
+	constantDesc.ByteWidth = sizeof(ConstantBuffer);
+	constantDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	GetDevice()->CreateBuffer(&constantDesc, nullptr, &constantBuffer_);
 }

@@ -19,13 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\ObjectViewer_DirectX\MochinekoEngine\InputManager.h" />
+    <ClInclude Include="MochinekoEngine\BaseCollider.h" />
     <ClInclude Include="MochinekoEngine\BaseObject.h" />
     <ClInclude Include="MochinekoEngine\BaseScene.h" />
+    <ClInclude Include="MochinekoEngine\Box.h" />
+    <ClInclude Include="MochinekoEngine\BoxCollider.h" />
     <ClInclude Include="MochinekoEngine\Camera.h" />
     <ClInclude Include="MochinekoEngine\CameraManager.h" />
     <ClInclude Include="MochinekoEngine\DebugScene.h" />
+    <ClInclude Include="MochinekoEngine\DX2DManager.h" />
     <ClInclude Include="MochinekoEngine\DX3DManager.h" />
     <ClInclude Include="MochinekoEngine\FBX.h" />
+    <ClInclude Include="MochinekoEngine\FbxChild.h" />
+    <ClInclude Include="MochinekoEngine\FontText.h" />
     <ClInclude Include="MochinekoEngine\Framework.h" />
     <ClInclude Include="MochinekoEngine\Image.h" />
     <ClInclude Include="MochinekoEngine\ImageManager.h" />
@@ -37,6 +44,7 @@
     <ClInclude Include="MochinekoEngine\ImGUI\imgui_impl_dx9.h" />
     <ClInclude Include="MochinekoEngine\ImGUI\imgui_impl_win32.h" />
     <ClInclude Include="MochinekoEngine\ImGUI\imgui_internal.h" />
+    <ClInclude Include="MochinekoEngine\ImGUI\imgui_stdlib.h" />
     <ClInclude Include="MochinekoEngine\ImGUI\imstb_rectpack.h" />
     <ClInclude Include="MochinekoEngine\ImGUI\imstb_textedit.h" />
     <ClInclude Include="MochinekoEngine\ImGUI\imstb_truetype.h" />
@@ -44,14 +52,23 @@
     <ClInclude Include="MochinekoEngine\SceneManager.h" />
     <ClInclude Include="MochinekoEngine\ShaderManager.h" />
     <ClInclude Include="MochinekoEngine\SoundManager.h" />
+    <ClInclude Include="MochinekoEngine\SphereCollider.h" />
     <ClInclude Include="MochinekoEngine\Texture.h" />
     <ClInclude Include="MochinekoEngine\Transform.h" />
+    <ClInclude Include="MochinekoEngine\VideoData.h" />
+    <ClInclude Include="MochinekoEngine\VideoObject.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\ObjectViewer_DirectX\MochinekoEngine\InputManager.cpp" />
+    <ClCompile Include="MochinekoEngine\Box.cpp" />
+    <ClCompile Include="MochinekoEngine\BoxCollider.cpp" />
     <ClCompile Include="MochinekoEngine\CameraManager.cpp" />
     <ClCompile Include="MochinekoEngine\DebugScene.cpp" />
+    <ClCompile Include="MochinekoEngine\DX2DManager.cpp" />
     <ClCompile Include="MochinekoEngine\DX3DManager.cpp" />
     <ClCompile Include="MochinekoEngine\FBX.cpp" />
+    <ClCompile Include="MochinekoEngine\FbxChild.cpp" />
+    <ClCompile Include="MochinekoEngine\FontText.cpp" />
     <ClCompile Include="MochinekoEngine\Image.cpp" />
     <ClCompile Include="MochinekoEngine\ImageManager.cpp" />
     <ClCompile Include="MochinekoEngine\ImGUI\imgui.cpp" />
@@ -62,6 +79,7 @@
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_impl_dx12.cpp" />
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_impl_dx9.cpp" />
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_impl_win32.cpp" />
+    <ClCompile Include="MochinekoEngine\ImGUI\imgui_stdlib.cpp" />
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_tables.cpp" />
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="MochinekoEngine\Main.cpp" />
@@ -69,7 +87,10 @@
     <ClCompile Include="MochinekoEngine\SceneManager.cpp" />
     <ClCompile Include="MochinekoEngine\ShaderManager.cpp" />
     <ClCompile Include="MochinekoEngine\SoundManager.cpp" />
+    <ClCompile Include="MochinekoEngine\SphereCollider.cpp" />
     <ClCompile Include="MochinekoEngine\Texture.cpp" />
+    <ClCompile Include="MochinekoEngine\VideoData.cpp" />
+    <ClCompile Include="MochinekoEngine\VideoObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="MochinekoEngine\PixelShader.hlsl">
@@ -106,7 +127,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v145</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>

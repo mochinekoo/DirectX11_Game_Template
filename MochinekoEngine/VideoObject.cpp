@@ -1,17 +1,19 @@
-#include "Image.h"
-#include "ShaderManager.h"
-#include "DX3DManager.h"
+#include "VideoObject.h"
 #include <DirectXMath.h>
+#include "DX3DManager.h"
+#include "ShaderManager.h"
 #include "ImGUI/imgui.h"
 
-using namespace DX3DManager;
 using namespace DirectX;
+using namespace DX3DManager;
 
-void Image::Init() {
-	texture_->Init();
+void VideoObject::Init() {
+	videoData_->Init();
 }
 
-void Image::Update() {
+void VideoObject::Update() {
+	videoData_->Update();
+
 	XMMATRIX world = transform_.GetWorldMatrix();
 	XMMATRIX view = XMMatrixIdentity();
 	XMMATRIX projection = XMMatrixOrthographicOffCenterLH(
@@ -22,17 +24,17 @@ void Image::Update() {
 
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
-	constantBuffer.diffuse_ = {};
-	constantBuffer.ambient_ = {};
+	constantBuffer.diffuse_ = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+	constantBuffer.ambient_ = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	constantBuffer.hasTexture_ = TRUE;
-	GetDeviceContext()->UpdateSubresource(texture_->GetConstanctBuffer(), 0, nullptr, &constantBuffer, 0, 0);
+	GetDeviceContext()->UpdateSubresource(videoData_->GetConstanctBuffer(), 0, nullptr, &constantBuffer, 0, 0);
 }
 
-void Image::Draw() {
-	auto vertexBuffer = texture_->GetVertexBuffer();
-	auto constantBuffer = texture_->GetConstanctBuffer();
-	auto srv = texture_->GetShaderResourceView();
-	auto samplerState = texture_->GetSamplerState();
+void VideoObject::Draw() {
+	auto vertexBuffer = videoData_->GetVertexBuffer();
+	auto constantBuffer = videoData_->GetConstanctBuffer();
+	auto srv = videoData_->GetShaderResourceView();
+	auto samplerState = videoData_->GetSamplerState();
 
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
@@ -53,12 +55,16 @@ void Image::Draw() {
 	GetDeviceContext()->RSSetState(nullptr);
 }
 
-void Image::DrawImGUI() {
+void VideoObject::DrawImGUI() {
 	std::string title = GetName() + "(" + GetTag() + ")";
 	ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoDocking);
 
 	if (ImGui::BeginTabBar("Tab")) {
 		if (ImGui::BeginTabItem("ObjectInfo")) {
+			float time = videoData_->GetTime();
+			if (ImGui::SliderFloat("Time", &time, 0, 10)) {
+				videoData_->SetTime(time);
+			}
 
 			ImGui::SliderFloat("Location X", &transform_.location_.x, -10.0f, 1280.0f);
 			ImGui::SliderFloat("Location Y", &transform_.location_.y, -10.0f, 720.0f);
@@ -81,5 +87,5 @@ void Image::DrawImGUI() {
 	ImGui::End();
 }
 
-void Image::Release() {
+void VideoObject::Release() {
 }

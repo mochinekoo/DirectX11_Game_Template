@@ -9,7 +9,7 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
-using namespace GameLib;
+using namespace MochinekoEngine;
 
 namespace DX3DManager {
 	inline ID3D11Device* device_ = nullptr;
@@ -21,6 +21,7 @@ namespace DX3DManager {
 	inline ID3D11DepthStencilState* depthState_ = nullptr;
 	inline ID3D11DepthStencilView* depthStencilView_ = nullptr;
 	inline ID3D11RasterizerState* rasterizerState_ = nullptr;
+	inline ID3D11RasterizerState* wireframeRasterizerState_ = nullptr;
 	inline ID3D11BlendState* blendState_ = nullptr;
 }
 
@@ -35,10 +36,8 @@ void DX3DManager::InitDX3D() {
 
 void DX3DManager::InitShader() {
 	ShaderManager::Init();
-	SetCurrentDirectory("MochinekoEngine");
-	ShaderManager::AddShader(ShaderType::PIXEL_SHADER, "PixelShader.hlsl");
-	ShaderManager::AddShader(ShaderType::VERTEX_SHADER, "VertexShader.hlsl");
-	SetCurrentDirectory("../");
+	ShaderManager::AddShader(ShaderType::PIXEL_SHADER, "MochinekoEngine/PixelShader.hlsl");
+	ShaderManager::AddShader(ShaderType::VERTEX_SHADER, "MochinekoEngine/VertexShader.hlsl");
 }
 
 void DX3DManager::InitDevice() {
@@ -56,12 +55,14 @@ void DX3DManager::InitDevice() {
 	swapchainDesc.SampleDesc.Count = 1;	
 	swapchainDesc.SampleDesc.Quality = 0;	
 
+	UINT createFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
+	createFlags |= D3D11_CREATE_DEVICE_DEBUG;
 	D3D_FEATURE_LEVEL level = {};
 	D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
-		D3D11_CREATE_DEVICE_BGRA_SUPPORT,
+		createFlags,
 		nullptr,
 		0,
 		D3D11_SDK_VERSION,
@@ -116,8 +117,15 @@ void DX3DManager::InitRasterizer() {
 	rasterizerDesc.CullMode = D3D11_CULL_NONE;
 	rasterizerDesc.FrontCounterClockwise = FALSE;
 
+	D3D11_RASTERIZER_DESC wireframeDesc = {};
+	wireframeDesc.FillMode = D3D11_FILL_WIREFRAME;
+	wireframeDesc.CullMode = D3D11_CULL_NONE;
+	wireframeDesc.FrontCounterClockwise = FALSE;
+
 	device_->CreateRasterizerState(&rasterizerDesc, &rasterizerState_);
-	deviceContext_->RSSetState(rasterizerState_);
+	device_->CreateRasterizerState(&wireframeDesc, &wireframeRasterizerState_);
+	//deviceContext_->RSSetState(rasterizerState_);
+	DisableWireframe();
 }
 
 void DX3DManager::InitBlend() {
@@ -151,3 +159,19 @@ ID3D11DepthStencilState* DX3DManager::GetDepthState() { return depthState_; }
 ID3D11DepthStencilView* DX3DManager::GetDepthView() { return depthStencilView_; }
 ID3D11RasterizerState* DX3DManager::GetRasterizerState() { return rasterizerState_; }
 ID3D11BlendState* DX3DManager::GetBlendState() { return blendState_; }
+
+void DX3DManager::EnableZDepthWrite() {
+	GetDeviceContext()->OMSetRenderTargets(1, &renderTargetView_, GetDepthView());
+}
+
+void DX3DManager::DisableZDepthWrite() {
+	GetDeviceContext()->OMSetRenderTargets(1, &renderTargetView_, nullptr);
+}
+
+void DX3DManager::EnableWireframe() {
+	deviceContext_->RSSetState(wireframeRasterizerState_);
+}
+
+void DX3DManager::DisableWireframe() {
+	deviceContext_->RSSetState(rasterizerState_);
+}

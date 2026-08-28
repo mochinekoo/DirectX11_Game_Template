@@ -22,6 +22,18 @@
     <Filter Include="MochinekoEngine\Shader">
       <UniqueIdentifier>{11706509-2b93-4702-b792-70f20faee79e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MochinekoEngine\SystemObject">
+      <UniqueIdentifier>{0822fdd7-450e-4dc5-af28-efa5b0355042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{447b3b55-a1f9-4c93-9ab3-30cbd386aa3f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Scene">
+      <UniqueIdentifier>{e2ad248b-893e-459a-be81-e7118b7bfb87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Object">
+      <UniqueIdentifier>{ce5acbe9-7086-4cca-b259-9905ddeeb5c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MochinekoEngine\BaseObject.h">
@@ -105,6 +117,39 @@
     <ClInclude Include="MochinekoEngine\ImGUI\imgui_impl_dx11.h">
       <Filter>MochinekoEngine\ImGUI</Filter>
     </ClInclude>
+    <ClInclude Include="MochinekoEngine\FbxChild.h">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\VideoData.h">
+      <Filter>MochinekoEngine\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\VideoObject.h">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\FontText.h">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\DX2DManager.h">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\BoxCollider.h">
+      <Filter>MochinekoEngine\SystemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\BaseCollider.h">
+      <Filter>MochinekoEngine\SystemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\SphereCollider.h">
+      <Filter>MochinekoEngine\SystemObject</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\ImGUI\imgui_stdlib.h">
+      <Filter>MochinekoEngine\ImGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ObjectViewer_DirectX\MochinekoEngine\InputManager.h">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\Box.h">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MochinekoEngine\CameraManager.cpp">
@@ -172,6 +217,36 @@
     </ClCompile>
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_impl_dx12.cpp">
       <Filter>MochinekoEngine\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\FbxChild.cpp">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\VideoData.cpp">
+      <Filter>MochinekoEngine\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\VideoObject.cpp">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\FontText.cpp">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\DX2DManager.cpp">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\BoxCollider.cpp">
+      <Filter>MochinekoEngine\SystemObject</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\SphereCollider.cpp">
+      <Filter>MochinekoEngine\SystemObject</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\ImGUI\imgui_stdlib.cpp">
+      <Filter>MochinekoEngine\ImGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ObjectViewer_DirectX\MochinekoEngine\InputManager.cpp">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\Box.cpp">
+      <Filter>MochinekoEngine\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

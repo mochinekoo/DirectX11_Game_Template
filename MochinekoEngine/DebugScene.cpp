@@ -4,19 +4,26 @@
 #include "SoundManager.h"
 #include "Image.h"
 #include "ImageManager.h"
+#include "DX3DManager.h"
+#include "VideoObject.h"
+
+using namespace DX3DManager;
 
 void DebugScene::Init() {
-	ObjectManager::AddObject(new FBX("anime.fbx"));
-	SoundManager::Load("Bossa_Latte.mp3");
-	SoundManager::Play("Bossa_Latte.mp3");
-	//ObjectManager::AddObject(new Image("cap.png"));
+	FBX* grid = new FBX("MochinekoEngine/Asset/grid.fbx", false, true);
+	grid->SetTag("Grid");
+	ObjectManager::AddObject(grid);
 
-	imageHandle_ = ImageManager::Load("cap.png");
+	FBX* gizmo = new FBX("MochinekoEngine/Asset/gizmo.fbx", false, false);
+	gizmo->SetTag("Gizmo");
+	ObjectManager::AddObject(gizmo);
+
+	//VideoObject* video = new VideoObject("a.mp4");
+	//ObjectManager::AddObject(video);
 }
 
 void DebugScene::Update() {
 }
 
 void DebugScene::Draw() {
-	ImageManager::Draw(imageHandle_);
 }
