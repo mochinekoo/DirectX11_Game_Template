@@ -35,6 +35,7 @@
     <ClInclude Include="MochinekoEngine\FontText.h" />
     <ClInclude Include="MochinekoEngine\Framework.h" />
     <ClInclude Include="MochinekoEngine\Image.h" />
+    <ClInclude Include="MochinekoEngine\ImageButton.h" />
     <ClInclude Include="MochinekoEngine\ImageManager.h" />
     <ClInclude Include="MochinekoEngine\ImGUI\imconfig.h" />
     <ClInclude Include="MochinekoEngine\ImGUI\imgui.h" />
@@ -70,6 +71,7 @@
     <ClCompile Include="MochinekoEngine\FbxChild.cpp" />
     <ClCompile Include="MochinekoEngine\FontText.cpp" />
     <ClCompile Include="MochinekoEngine\Image.cpp" />
+    <ClCompile Include="MochinekoEngine\ImageButton.cpp" />
     <ClCompile Include="MochinekoEngine\ImageManager.cpp" />
     <ClCompile Include="MochinekoEngine\ImGUI\imgui.cpp" />
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_demo.cpp" />

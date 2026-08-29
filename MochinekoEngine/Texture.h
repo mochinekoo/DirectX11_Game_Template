@@ -57,6 +57,8 @@ public:
 	ID3D11Buffer* GetConstanctBuffer() const { return constantBuffer_; }
 	ID3D11Buffer* GetVertexBuffer() const { return vertexBuffer_; }
 
+	int GetWidth() const { return width_; }
+	int GetHeight() const { return height_; }
 	std::string GetFileName() const { return fileName_; }
 
 

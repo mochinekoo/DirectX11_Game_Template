@@ -150,6 +150,9 @@
     <ClInclude Include="MochinekoEngine\Box.h">
       <Filter>MochinekoEngine\Object</Filter>
     </ClInclude>
+    <ClInclude Include="MochinekoEngine\ImageButton.h">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MochinekoEngine\CameraManager.cpp">
@@ -246,6 +249,9 @@
       <Filter>MochinekoEngine\Manager</Filter>
     </ClCompile>
     <ClCompile Include="MochinekoEngine\Box.cpp">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\ImageButton.cpp">
       <Filter>MochinekoEngine\Object</Filter>
     </ClCompile>
   </ItemGroup>

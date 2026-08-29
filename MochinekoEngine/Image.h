@@ -24,5 +24,7 @@ public:
 	void Release() override;
 
 	std::string GetFileName() const { return texture_->GetFileName(); }
+	int GetWidth() const { return texture_->GetWidth(); }
+	int GetHeight() const { return texture_->GetHeight(); }
 };
 
