@@ -2,30 +2,29 @@ Texture2D texture0 : register(t0);
 SamplerState sampler0 : register(s0);
 
 cbuffer ConstantBuffer : register(b0) {
-    matrix wvpMatrix;
-    float4 diffuse;
-    float4 ambient;
-    float4 specular;
-    float3 emission;
-    float shininess;
-    int hasTexture;
-    float3 lightDirection;
+    matrix wvpMatrix;           // ワールド・ビュー・プロジェクション行列
+    float4 diffuse;             // 物体の色
+    float4 ambient;             // 光が当たっていない部分の色（環境光）
+    float4 specular;            // 光が当たった部分の色（鏡面反射）
+    float3 emission;            // 物体が自ら発光する色
+    float shininess;            // 輝きの強さ
+    int hasTexture;             // テクスチャを持っているかどうか
+    float3 lightDirection;      // ライトの向き
 };
 
-struct VSInput
-{
-    float3 position : POSITION;
-    float3 normal : NORMAL;
-    float4 color : COLOR;
-    float2 uv : TEXCOORD;
+struct VSInput {
+    float3 position : POSITION; // 頂点の位置
+    float3 normal : NORMAL;     // 法線
+    float4 color : COLOR;       // 色
+    float2 uv : TEXCOORD;       // UV座標
 };
 
 struct VSOutput
 {
-    float4 position : SV_POSITION;
-    float3 normal : NORMAL;
-    float4 color : COLOR;
-    float2 uv : TEXCOORD;
+    float4 position : SV_POSITION;  // 頂点の位置
+    float3 normal : NORMAL;         // 法線
+    float4 color : COLOR;           // 色
+    float2 uv : TEXCOORD;           // UV座標
 };
 
 
