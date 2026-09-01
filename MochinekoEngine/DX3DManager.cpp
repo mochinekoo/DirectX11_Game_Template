@@ -41,7 +41,12 @@ void DX3DManager::InitShader() {
 }
 
 void DX3DManager::InitDevice() {
+	HRESULT resultFunc = S_OK;
 
+	///
+	/// スワップチェイン
+	/// ＜構造体の詳細な説明＞ https://learn.microsoft.com/ja-jp/windows/win32/api/dxgi/ns-dxgi-dxgi_swap_chain_desc
+	/// 
 	DXGI_SWAP_CHAIN_DESC swapchainDesc = {};
 	swapchainDesc.BufferDesc.Width = 1280;
 	swapchainDesc.BufferDesc.Height = 720;
@@ -58,49 +63,71 @@ void DX3DManager::InitDevice() {
 	UINT createFlags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 	createFlags |= D3D11_CREATE_DEVICE_DEBUG;
 	D3D_FEATURE_LEVEL level = {};
-	D3D11CreateDeviceAndSwapChain(
+	resultFunc = D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
 		nullptr,
 		createFlags,
 		nullptr,
 		0,
-		D3D11_SDK_VERSION,
-		&swapchainDesc,
-		&swapChain_,
-		&device_,
-		&level,
-		&deviceContext_
+		D3D11_SDK_VERSION,		// DirectXのバージョン
+		&swapchainDesc,			// スワップチェインの設定
+		&swapChain_,			// スワップチェインそのもの
+		&device_,				// デバイス
+		&level,					// 機能レベル
+		&deviceContext_			// デバイスコンテキスト
 	);
 
-	swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&texture2D_);
-	device_->CreateRenderTargetView(texture2D_, NULL, &renderTargetView_);
+	assert(SUCCEEDED(resultFunc));
+
+	resultFunc = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&texture2D_);
+	assert(SUCCEEDED(resultFunc));
+	resultFunc = device_->CreateRenderTargetView(texture2D_, NULL, &renderTargetView_);
+	assert(SUCCEEDED(resultFunc));
 }
 
 void DX3DManager::InitDepthBuffer() {
+	HRESULT resultFunc = S_OK;
+
+	///
+	/// 2Dテクスチャ
+	/// ＜構造体の詳細な説明＞ https://learn.microsoft.com/ja-jp/windows/win32/api/d3d11/ns-d3d11-d3d11_texture2d_desc
+	/// 
 	D3D11_TEXTURE2D_DESC depthDesc = {};
-	depthDesc.Width = 1280;
-	depthDesc.Height = 720;
-	depthDesc.MipLevels = 1;
-	depthDesc.ArraySize = 1;
+	depthDesc.Width = 1280;								// テクスチャの幅
+	depthDesc.Height = 720;								// テクスチャの高さ
+	depthDesc.MipLevels = 1;							// 遠くにある物体などを縮小するレベル
+	depthDesc.ArraySize = 1;							// テクスチャ配列内のテクスチャ数
 	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	depthDesc.SampleDesc.Count = 1;
+	depthDesc.SampleDesc.Count = 1;						
 	depthDesc.SampleDesc.Quality = 0;
 	depthDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthDesc.CPUAccessFlags = 0;
 
-	device_->CreateTexture2D(&depthDesc, nullptr, &depthStencilTexture_);
+	resultFunc = device_->CreateTexture2D(&depthDesc, nullptr, &depthStencilTexture_);
+	assert(SUCCEEDED(resultFunc));
 
+	///
+	/// 深度ステンシルビュー
+	/// ＜構造体の詳細な説明＞ https://learn.microsoft.com/ja-jp/windows/win32/api/d3d11/ns-d3d11-d3d11_depth_stencil_view_desc
+	/// 
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	device_->CreateDepthStencilView(depthStencilTexture_, &depthStencilViewDesc, &depthStencilView_);
+	resultFunc = device_->CreateDepthStencilView(depthStencilTexture_, &depthStencilViewDesc, &depthStencilView_);
+	assert(SUCCEEDED(resultFunc));
 }
 
 void DX3DManager::InitViewPort() {
+	HRESULT resultFunc = S_OK;
+
+	///
+	/// ビューポート
+	/// ＜構造体の詳細な説明＞ https://learn.microsoft.com/ja-jp/windows/win32/api/d3d11/ns-d3d11-d3d11_viewport
+	/// 
 	D3D11_VIEWPORT viewport = {};
 	viewport.Width = 1280;
 	viewport.Height = 720;
@@ -112,6 +139,12 @@ void DX3DManager::InitViewPort() {
 }
 
 void DX3DManager::InitRasterizer() {
+	HRESULT resultFunc = S_OK;
+
+	///
+	/// ラスタライザー
+	/// ＜構造体の詳細な説明＞ https://learn.microsoft.com/ja-jp/windows/win32/api/d3d11/ns-d3d11-d3d11_rasterizer_desc
+	/// 
 	D3D11_RASTERIZER_DESC rasterizerDesc = {};
 	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
 	rasterizerDesc.CullMode = D3D11_CULL_NONE;
@@ -122,13 +155,21 @@ void DX3DManager::InitRasterizer() {
 	wireframeDesc.CullMode = D3D11_CULL_NONE;
 	wireframeDesc.FrontCounterClockwise = FALSE;
 
-	device_->CreateRasterizerState(&rasterizerDesc, &rasterizerState_);
-	device_->CreateRasterizerState(&wireframeDesc, &wireframeRasterizerState_);
+	resultFunc = device_->CreateRasterizerState(&rasterizerDesc, &rasterizerState_);
+	assert(SUCCEEDED(resultFunc));
+	resultFunc = device_->CreateRasterizerState(&wireframeDesc, &wireframeRasterizerState_);
+	assert(SUCCEEDED(resultFunc));
 	//deviceContext_->RSSetState(rasterizerState_);
 	DisableWireframe();
 }
 
 void DX3DManager::InitBlend() {
+	HRESULT resultFunc = S_OK;
+
+	///
+	/// ブレンド
+	/// ＜構造体の詳細な説明＞ https://learn.microsoft.com/ja-jp/windows/win32/api/d3d11/ns-d3d11-d3d11_blend_desc
+	/// 
 	D3D11_BLEND_DESC blendDesc = {};
 	blendDesc.RenderTarget[0].BlendEnable = TRUE; 
 	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
@@ -139,14 +180,11 @@ void DX3DManager::InitBlend() {
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	device_->CreateBlendState(&blendDesc, &blendState_);
+	resultFunc = device_->CreateBlendState(&blendDesc, &blendState_);
+	assert(SUCCEEDED(resultFunc));
 
 	float blendFactor[4] = { 0, 0, 0, 0 };
-	deviceContext_->OMSetBlendState(
-		blendState_,
-		blendFactor,
-		0xFFFFFFFF
-	);
+	deviceContext_->OMSetBlendState(blendState_, blendFactor, 0xFFFFFFFF);
 }
 
 ID3D11Device* DX3DManager::GetDevice() { return device_; }

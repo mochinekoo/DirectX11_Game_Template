@@ -7,6 +7,9 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+/// <summary>
+/// 色に関する構造体
+/// </summary>
 struct Color {
 	float r_ = 0.0f;
 	float g_ = 0.0f;
@@ -35,15 +38,22 @@ struct Color {
 	static Color Black() { return Color(0.0f, 0.0f, 0.0f, 1.0f); }
 };
 
+
+/// <summary>
+/// 頂点の構造体
+/// </summary>
 struct Vertex {
-	DirectX::XMFLOAT3 location_ = {};
-	DirectX::XMFLOAT3 normal_ = {};
-	DirectX::XMFLOAT4 color_ = {};
-	DirectX::XMFLOAT2 uv_ = {};
+	DirectX::XMFLOAT3 location_ = {};	// 頂点の位置
+	DirectX::XMFLOAT3 normal_ = {};		// 法線
+	DirectX::XMFLOAT4 color_ = {};		// 色
+	DirectX::XMFLOAT2 uv_ = {};			// UV座標
 };
 
+/// <summary>
+/// コンスタントバッファ（GPUに送るデータ）
+/// </summary>
 struct ConstantBuffer {
-	DirectX::XMMATRIX wvpMatrix_ = {};
+	DirectX::XMMATRIX wvpMatrix_ = {};	// ワールド・ビュー・プロジェクション行列
 	DirectX::XMFLOAT4 diffuse_ = {};
 	DirectX::XMFLOAT4 ambient_ = {};
 	DirectX::XMFLOAT4 specular_ = {};
@@ -53,8 +63,14 @@ struct ConstantBuffer {
 	DirectX::XMFLOAT3 lightDirection_ = {};
 };
 
+/// <summary>
+/// Direct3Dに関する名前空間
+/// </summary>
 namespace DX3DManager {
 
+	/// <summary>
+	/// Direct3Dを初期化する関数
+	/// </summary>
 	void InitDX3D();
 	void InitShader();
 	void InitDevice();
@@ -74,9 +90,24 @@ namespace DX3DManager {
 	 ID3D11RasterizerState* GetRasterizerState();
 	 ID3D11BlendState* GetBlendState();
 
+	 /// <summary>
+	 /// Zバッファを有効にする関数
+	 /// </summary>
 	 void EnableZDepthWrite();
+
+	 /// <summary>
+	 /// Zバッファを無効にする関数
+	 /// </summary>
 	 void DisableZDepthWrite();
+
+	 /// <summary>
+	 /// ワイヤーフレーム（線だけのモデル）を有効にする関数
+	 /// </summary>
 	 void EnableWireframe();
+
+	 /// <summary>
+	 /// ワイヤーフレーム（線だけのモデル）を無効にする関数
+	 /// </summary>
 	 void DisableWireframe();
 
 }
