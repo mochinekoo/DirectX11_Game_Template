@@ -54,8 +54,11 @@ public:
 				ImGui::SliderFloat("Scale X", &transform_.scale_.x, 0.1f, 10.0f);
 				ImGui::SliderFloat("Scale Y", &transform_.scale_.y, 0.1f, 10.0f);
 				ImGui::SliderFloat("Scale Z", &transform_.scale_.z, 0.1f, 10.0f);
+
+				ImGui::EndTabItem();
 			}
 		}
+		ImGui::EndTabBar();
 		ImGui::End();
 	};
 	virtual void Release() {};
