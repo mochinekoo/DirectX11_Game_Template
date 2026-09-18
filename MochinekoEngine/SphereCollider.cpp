@@ -1,6 +1,5 @@
 #include "SphereCollider.h"
 #include <DirectXMath.h>
-#include "../RunningScene.h"
 #include "ModelManager.h"
 #include "BoxCollider.h"
 

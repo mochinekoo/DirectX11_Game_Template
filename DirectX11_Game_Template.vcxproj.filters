@@ -159,6 +159,9 @@
     <ClInclude Include="MochinekoEngine\MathUtil.h">
       <Filter>MochinekoEngine\Util</Filter>
     </ClInclude>
+    <ClInclude Include="MochinekoEngine\ModelManager.h">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MochinekoEngine\CameraManager.cpp">
@@ -259,6 +262,12 @@
     </ClCompile>
     <ClCompile Include="MochinekoEngine\ImageButton.cpp">
       <Filter>MochinekoEngine\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\ModelManager.cpp">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\Framework.cpp">
+      <Filter>MochinekoEngine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

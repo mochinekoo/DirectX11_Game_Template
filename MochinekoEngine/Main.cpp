@@ -84,7 +84,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	DX2DManager::Init();
 
 	MochinekoEngineResource::Init();
-	GameModel::Init();
 
 	//const std::string fontName, const int fontSize, const std::string& text, const Color& color) 
 	FontText* text = new FontText(L"メイリオ", 30, L"ああ", {0.0f, 0.0f, 0.0f, 1.0f});
