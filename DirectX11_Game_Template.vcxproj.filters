@@ -34,6 +34,9 @@
     <Filter Include="Source\Object">
       <UniqueIdentifier>{ce5acbe9-7086-4cca-b259-9905ddeeb5c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MochinekoEngine\Util">
+      <UniqueIdentifier>{736c3d9b-6723-48b1-b809-ab3975827667}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MochinekoEngine\BaseObject.h">
@@ -152,6 +155,9 @@
     </ClInclude>
     <ClInclude Include="MochinekoEngine\ImageButton.h">
       <Filter>MochinekoEngine\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\MathUtil.h">
+      <Filter>MochinekoEngine\Util</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
