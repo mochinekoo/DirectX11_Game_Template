@@ -2,21 +2,22 @@ Texture2D texture0 : register(t0);
 SamplerState sampler0 : register(s0);
 
 cbuffer ConstantBuffer : register(b0) {
-    matrix wvpMatrix;       // ワールド・ビュー・プロジェクション行列
-    float4 diffuse;         // 物体の色
-    float4 ambient;         // 光が当たっていない部分の色（環境光）
-    float4 specular;        // 光が当たった部分の色（鏡面反射）
-    float3 emission;        // 物体が自ら発光する色
-    float shininess;        // 輝きの強さ
-    int hasTexture;         // テクスチャを持っているかどうか
-    float3 lightDirection;  // ライトの向き
+    matrix wvpMatrix;
+    float4 diffuse;
+    float4 ambient;
+    float4 specular;
+    float3 emission;
+    float shininess;
+    int hasTexture;
+    float3 lightDirection;
+    int enableGray;
 };
 
 struct PSInput {
-    float4 position : SV_POSITION;  // 頂点の位置
-    float3 normal : NORMAL;         // 法線
-    float4 color : COLOR;           // 色
-    float2 uv : TEXCOORD0;          // UV座標
+    float4 position : SV_POSITION;
+    float3 normal : NORMAL;
+    float4 color : COLOR;
+    float2 uv : TEXCOORD0;
 };
 
 float4 main(PSInput input) : SV_TARGET {
@@ -27,6 +28,14 @@ float4 main(PSInput input) : SV_TARGET {
     }
     else {
         color = diffuse;
+    }
+    
+    if (enableGray == 1) {
+        float r = color.r * 0.299;
+        float g = color.g * 0.587;
+        float b = color.b * 0.114;
+        float gray = r + g + b;
+        return float4(gray, gray, gray, color.w);
     }
     
     return color;

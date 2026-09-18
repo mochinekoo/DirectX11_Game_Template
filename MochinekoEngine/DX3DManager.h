@@ -61,6 +61,7 @@ struct ConstantBuffer {
 	float shininess_ = 0.0;
 	int hasTexture_ = FALSE;
 	DirectX::XMFLOAT3 lightDirection_ = {};
+	int enableGray = FALSE;
 };
 
 /// <summary>
