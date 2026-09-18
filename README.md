@@ -15,7 +15,7 @@
 | クラス/ヘッダー名 | 説明 |
 | --- | --- |
 | Main.cpp | メインクラス。 |
-| Framework.h | |
+| Framework.cpp/h | エンジンの関数。 |
 
 ## データ
 | クラス/ヘッダー名 | 説明 |
@@ -65,7 +65,7 @@
 ## ユーティリティ
 | クラス/ヘッダー名 | 説明 |
 | --- | --- |
-|  |  |
+| MathUtil.h  | 数学のユーティリティ名前空間。  |
 
 # 関連項目
 * pygame（Python）によるテンプレート： https://github.com/mochinekoo/PyGame_Template
