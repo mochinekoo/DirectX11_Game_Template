@@ -67,4 +67,6 @@ public:
 	void SetZDepthWrite(const bool flag) { zDepthWrite_ = flag; }
 	bool IsWireframe() const { return wireframe_; }
 	void SetWireframe(const bool flag) { wireframe_ = flag; }
+
+	std::string GetFileName() const { return fileName_; }
 };

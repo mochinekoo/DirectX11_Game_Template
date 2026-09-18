@@ -43,4 +43,6 @@ public:
 	ColliderType GetColliderType() const { return type_; }
 
 	BaseObject* GetParent() const { return parent_; }
+
+	Transform GetTransform() const { return transform_; }
 };
