@@ -43,10 +43,12 @@ void FbxChild::Update() {
 }
 
 void FbxChild::Draw() {
-	if (!zDepthWrite_) {
+	FBX* fbx = dynamic_cast<FBX*>(parent_);
+
+	if (!zDepthWrite_ || !fbx->IsZDepthWrite()) {
 		DisableZDepthWrite();
 	}
-	if (wireframe_) {
+	if (wireframe_ || fbx->IsWireframe()) {
 		EnableWireframe();
 	}
 	else {
