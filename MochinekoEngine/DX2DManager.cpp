@@ -1,4 +1,4 @@
-#include "DX2DManager.h"
+﻿#include "DX2DManager.h"
 #include "DX3DManager.h"
 #include <string>
 #include <vector>
@@ -42,8 +42,8 @@ void DX2DManager::Init() {
 		&defaultFont_.textFormat_
 	);
 
-	defaultFont_.textFormat_->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
-	defaultFont_.textFormat_->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
+	defaultFont_.textFormat_->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+	defaultFont_.textFormat_->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_NEAR);
 
 	renderTarget_->CreateSolidColorBrush(DEFAULT_COLOR, &defaultFont_.brush_);
 }
@@ -61,10 +61,15 @@ void DX2DManager::DrawFontText(const int x, const int y, const std::string& text
 	d2dColor.a = color.a_;
 	defaultFont_.brush_->SetColor(d2dColor);
 
-	std::wstring wText = std::wstring(text.begin(), text.end());
+	int wcharCount = MultiByteToWideChar(CP_ACP, 0, text.data(), text.size(), nullptr, 0);
+
+	std::wstring wText(wcharCount, L'\0');
+
+	MultiByteToWideChar(CP_ACP, 0, text.data(), text.size(), wText.data(), wcharCount);
+
 	renderTarget_->DrawTextW(
 		wText.c_str(),
-		text.size(),
+		wText.size(),
 		defaultFont_.textFormat_,
 		D2D1::RectF(x, y, size.width, size.height),
 		defaultFont_.brush_
