@@ -15,8 +15,15 @@ void ObjectManager::Update() {
 	for (int i = 0; i < objectList_.size(); i++) {
 		BaseObject* object = objectList_[i];
 		if (object == nullptr) continue;
+		auto& colList = object->GetColliderList();
 		if (object->GetParent() == nullptr) {
 			object->UpdateTransform();
+		}
+
+		for (int a = 0; a < colList.size(); a++) {
+			auto col = colList[a];
+			if (col == nullptr) continue;
+			col->Draw();
 		}
 	}
 
@@ -67,11 +74,20 @@ void ObjectManager::Update() {
 							continue;
 						}
 					}
+					if (colliderA->GetColliderType() == ColliderType::BOX && colliderB->GetColliderType() == ColliderType::SPHERE) {
+						if (BoxCollider::IsHitBoxSphere(boxColA, sphereColB)) {
+							// OutputDebugString(L"Hit: Box VS Sphere (Sphere VS BOX) \n");
+							isHit = true;
+							continue;
+						}
+					}
 				}
 			}
 
 			if (isHit) {
 				OutputDebugString(L"Hit! \n");
+				objectA->OnCollision(objectB);
+				objectB->OnCollision(objectA);
 				continue;
 			}
 		}
@@ -113,9 +129,7 @@ void ObjectManager::RemoveObject(BaseObject* object) {
 		if (*it == object) {
 			delete* it;
 			it = objectList_.erase(it);
-		}
-		else {
-			it++;
+			return;
 		}
 	}
 }

@@ -6,24 +6,21 @@
 #include <vector>
 #include "BaseCollider.h"
 
-/// <summary>
-/// オブジェクトの親クラス
-/// </summary>
 class BaseObject {
 private:
-	int drawHighOrder_;	// オブジェクトの優先度。高いほど手前になる。（※Zバッファが有効な場合は使われません）
-	std::string name_;	// オブジェクトの名前
+	int drawHighOrder_;	// 高いほど手前に
+	std::string name_;
 protected:
-	std::string tag_;	// オブジェクトのタグ
-	bool isDead_;		// オブジェクトが死んでいるかどうか
-	bool showImGUI_;	// デバック用のImGUIを表示するかどうか
-	std::vector<BaseCollider*> colliderList_;	// コライダーのリスト
+	std::string tag_;
+	bool isDead_;
+	bool showImGUI_;
+	std::vector<BaseCollider*> colliderList_;
 
-	BaseObject* parent_;					// 親のオブジェクト
-	std::vector<BaseObject*> childList_;	// 子供のオブジェクトのリスト
-	DirectX::XMMATRIX worldMatrix_;			// ワールド行列
+	BaseObject* parent_;
+	std::vector<BaseObject*> childList_;
+	DirectX::XMMATRIX worldMatrix_;
 
-	Transform transform_;	// トランスフォーム（移動/回転/スケール/ベクトル）
+	Transform transform_;
 public:
 
 	BaseObject(const std::string& name) {
@@ -37,24 +34,9 @@ public:
 	};
 	virtual ~BaseObject() {};
 
-	/// <summary>
-	/// オブジェクトを初期化する関数
-	/// </summary>
 	virtual void Init() {};
-
-	/// <summary>
-	/// オブジェクトを更新する関数
-	/// </summary>
 	virtual void Update() {};
-
-	/// <summary>
-	/// オブジェクトを描画する関数
-	/// </summary>
 	virtual void Draw() {};
-
-	/// <summary>
-	/// デバック用のImGUIを描画する関数
-	/// </summary>
 	virtual void DrawImGUI() {
 		if (!showImGUI_) return;
 		ImGui::Begin(name_.c_str(), nullptr, ImGuiWindowFlags_NoDocking);
@@ -81,22 +63,11 @@ public:
 	};
 	virtual void Release() {};
 
-	/// <summary>
-	/// オブジェクトの親
-	/// </summary>
-	/// <returns>ポインタで返します。</returns>
-	BaseObject* GetParent() const { return parent_; }
+	virtual void OnCollision(BaseObject* object) {};
 
-	/// <summary>
-	/// オブジェクトの親を設定する関数
-	/// </summary>
-	/// <param name="object"></param>
+	BaseObject* GetParent() const { return parent_; }
 	void SetParent(BaseObject* object) { parent_ = object; }
 
-	/// <summary>
-	/// オブジェクトの子供を追加する関数
-	/// </summary>
-	/// <param name="object"></param>
 	void AddChild(BaseObject* object) { 
 		childList_.push_back(object); 
 		object->parent_ = this;
@@ -121,38 +92,28 @@ public:
 		}
 	}
 
-	/// <summary>
-	/// オブジェクトの名前
-	/// </summary>
 	std::string GetName() const { return name_; }
-
-	/// <summary>
-	/// オブジェクトのタグ
-	/// </summary>
-	/// <returns></returns>
 	std::string GetTag() const { return tag_; }
 	void SetTag(const std::string& tag) { tag_ = tag; }
-
-	/// <summary>
-	/// 自分をキルする関数
-	/// </summary>
 	void KillMe() { isDead_ = true; }
-
-	/// <summary>
-	/// オブジェクトが死んでいるかどうかを返す関数
-	/// </summary>
-	/// <returns>死んでいるならtrue、死んでいない場合はfalseを返す。</returns>
 	bool IsDead() const { return isDead_; }
+
 	Transform GetTransform() const { return transform_; }
 	void SetTransform(const Transform& transform) { transform_ = transform; }
+	void SetLocation(const DirectX::XMFLOAT3 location) { transform_.location_ = location; }
+	void SetScale(const DirectX::XMFLOAT3 scale) { transform_.scale_ = scale; }
+	void SetRotation(const DirectX::XMFLOAT3 rotation) { transform_.rotation_ = rotation; }
+	void SetVelocity(const DirectX::XMFLOAT3 velocity) { transform_.velocity_ = velocity; }
+
 	int GetDrawOrder() const { return drawHighOrder_; }
 	void SetDrawOrder(const int order) { drawHighOrder_ = order;  }
 	bool IsShowImGUI() const { return showImGUI_; }
 	void SetShowImGUI(const bool flag) { showImGUI_ = flag; }
-
-	/// <summary>
-	/// コライダーのリスト
-	/// </summary>
-	/// <returns></returns>
 	std::vector<BaseCollider*>& GetColliderList() { return colliderList_; }
+
+	void AddCollider(BaseCollider* collider) {
+		collider->Init();
+		colliderList_.push_back(collider);
+	};
+
 };
