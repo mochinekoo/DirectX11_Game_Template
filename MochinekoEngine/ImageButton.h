@@ -25,10 +25,13 @@ public:
 	void Init() override;
 	void Update() override;
 	void Draw() override;
+	void DrawImGUI() override;
 	void Release() override;
 
 	bool IsPush() const { return isPush_; }
 	bool IsHover() const { return isHover_; }
+
+	Image* GetImage() const { return image_; }
 
 	void SetHoverFunc(std::function<void()> func) { hoverFunc = func; }
 	void SetPushFunc(std::function<void()> func) { pushFunc = func; }

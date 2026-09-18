@@ -25,6 +25,7 @@ void Image::Update() {
 	constantBuffer.diffuse_ = {};
 	constantBuffer.ambient_ = {};
 	constantBuffer.hasTexture_ = TRUE;
+	constantBuffer.enableGray = enableGray_;
 	GetDeviceContext()->UpdateSubresource(texture_->GetConstanctBuffer(), 0, nullptr, &constantBuffer, 0, 0);
 }
 
@@ -36,6 +37,8 @@ void Image::Draw() {
 
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
+
+	DisableZDepthWrite();
 
 	ShaderManager::SetPixelShader("MochinekoEngine/PixelShader.hlsl");
 	ShaderManager::SetVertexShader("MochinekoEngine/VertexShader.hlsl");
@@ -49,6 +52,8 @@ void Image::Draw() {
 	GetDeviceContext()->PSSetConstantBuffers(0, 1, &constantBuffer);
 
 	GetDeviceContext()->Draw(6, 0);
+
+	EnableZDepthWrite();
 
 	GetDeviceContext()->RSSetState(nullptr);
 }
