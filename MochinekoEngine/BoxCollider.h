@@ -2,17 +2,18 @@
 #include <DirectXMath.h>
 #include "BaseCollider.h"
 #include "FBX.h"
+#include "SphereCollider.h"
 
 class BoxCollider : public BaseCollider {
 private:
-	FBX* fbx_;
+	//FBX* fbx_;
 	DirectX::XMFLOAT3 colliderSize_;
 public:
 
 	BoxCollider(BaseObject* parent, const DirectX::XMFLOAT3& colliderSize)
 		: BaseCollider(ColliderType::BOX, parent) {
 		colliderSize_ = colliderSize;
-		fbx_ = new FBX("MochinekoEngine/Asset/BoxCollider.fbx");
+		//fbx_ = new FBX("MochinekoEngine/Asset/BoxCollider.fbx");
 	}
 
 	~BoxCollider() {
@@ -27,4 +28,5 @@ public:
 	void SetColliderSize(const DirectX::XMFLOAT3& colliderSize) { colliderSize_ = colliderSize; }
 
 	static bool IsHitBoxBox(BoxCollider* colA, BoxCollider* colB);
+	static bool IsHitBoxSphere(BoxCollider* col1, SphereCollider* col2);
 };
