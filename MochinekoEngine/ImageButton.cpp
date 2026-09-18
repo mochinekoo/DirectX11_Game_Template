@@ -19,11 +19,15 @@ void ImageButton::Update() {
 
 	isHover_ = (hoverX && hoverY);
 	if (isHover_) {
-		hoverFunc();
+		if (hoverFunc != NULL) {
+			hoverFunc();
+		}
 	}
 	isPush_ = (isHover_&& InputManager::CheckDownMouse(0));
 	if (isPush_) {
-		pushFunc();
+		if (pushFunc != NULL) {
+			pushFunc();
+		}	
 	}
 
 
