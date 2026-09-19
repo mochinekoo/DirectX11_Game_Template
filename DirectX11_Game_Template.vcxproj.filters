@@ -147,9 +147,6 @@
     <ClInclude Include="MochinekoEngine\ImGUI\imgui_stdlib.h">
       <Filter>MochinekoEngine\ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\ObjectViewer_DirectX\MochinekoEngine\InputManager.h">
-      <Filter>MochinekoEngine\Manager</Filter>
-    </ClInclude>
     <ClInclude Include="MochinekoEngine\Box.h">
       <Filter>MochinekoEngine\Object</Filter>
     </ClInclude>
@@ -160,6 +157,9 @@
       <Filter>MochinekoEngine\Util</Filter>
     </ClInclude>
     <ClInclude Include="MochinekoEngine\ModelManager.h">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="MochinekoEngine\InputManager.h">
       <Filter>MochinekoEngine\Manager</Filter>
     </ClInclude>
   </ItemGroup>
@@ -254,9 +254,6 @@
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_stdlib.cpp">
       <Filter>MochinekoEngine\ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="..\ObjectViewer_DirectX\MochinekoEngine\InputManager.cpp">
-      <Filter>MochinekoEngine\Manager</Filter>
-    </ClCompile>
     <ClCompile Include="MochinekoEngine\Box.cpp">
       <Filter>MochinekoEngine\Object</Filter>
     </ClCompile>
@@ -268,6 +265,9 @@
     </ClCompile>
     <ClCompile Include="MochinekoEngine\Framework.cpp">
       <Filter>MochinekoEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\InputManager.cpp">
+      <Filter>MochinekoEngine\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
