@@ -53,7 +53,7 @@ void InputManager::Update() {
     for (int i = 0; i < 256; i++) {
         if (CheckDownKey(i)) {
             if (i == DIK_BACKSPACE) {
-                if (keyBuffer_.size() > 0) continue;
+                if (keyBuffer_.size() <= 0) continue;
                 keyBuffer_.pop_back();
             }
             else {
