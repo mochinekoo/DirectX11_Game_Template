@@ -16,7 +16,8 @@ void Box::Init() {
 
 void Box::Update() {
 	Camera* currentCamera = CameraManager::GetCurrentCamera();
-	XMMATRIX world = transform_.GetWorldMatrix();
+	XMMATRIX size = XMMatrixScaling(width_, height_, 1.0f);
+	XMMATRIX world = size * transform_.GetWorldMatrix();
 	XMMATRIX view = XMMatrixIdentity();
 	XMMATRIX projection = XMMatrixOrthographicOffCenterLH(
 		0.0f, 1280.0f,
@@ -71,6 +72,9 @@ void Box::DrawImGUI() {
 			ImGui::SliderFloat("Scale Y", &transform_.scale_.y, 0.1f, 10.0f);
 			ImGui::SliderFloat("Scale Z", &transform_.scale_.z, 0.1f, 10.0f);
 
+			ImGui::SliderFloat("Width", &width_, 0.0f, 100.0f);
+			ImGui::SliderFloat("Height", &height_, 0.0f, 100.0f);
+
 			ImGui::EndTabItem();
 		}
 	}
@@ -86,12 +90,22 @@ void Box::Release()
 
 void Box::InitVertexBuffer() {
 	vertexList_.resize(6);
+
+	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[1] = { {0.0f, 1.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[2] = { { 1.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[3] = { { 1.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[4] = { { 1.0f,  1.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	vertexList_[5] = { {0.0f,  1.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+
+	/*
 	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
 	vertexList_[1] = { {0.0f, (float) height_, 0.0f}, {}, color_, {0.0f, 0.0f} };
 	vertexList_[2] = { { (float)width_, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
 	vertexList_[3] = { { (float)width_, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
 	vertexList_[4] = { { (float) width_,  (float)height_, 0.0f}, {}, color_, {0.0f, 0.0f} };
 	vertexList_[5] = { {0.0f,  (float)height_, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	*/
 
 	D3D11_BUFFER_DESC vertexDesc = {};
 	vertexDesc.Usage = D3D11_USAGE_DYNAMIC;

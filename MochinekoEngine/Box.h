@@ -6,7 +6,7 @@
 
 class Box : public BaseObject {
 private:
-	unsigned int width_, height_;
+	float width_, height_;
 
 	ID3D11Buffer* vertexBuffer_;
 	ID3D11Buffer* constantBuffer_;
@@ -17,7 +17,7 @@ private:
 	void InitConstantBuffer();
 public:
 
-	Box(const unsigned int width, const unsigned int height, const DirectX::XMFLOAT4& color = {0.0f, 0.0f, 0.0f, 1.0f})
+	Box(const float width, const float height, const DirectX::XMFLOAT4& color = {0.0f, 0.0f, 0.0f, 1.0f})
 		: BaseObject("Box") {
 		color_ = color;
 		width_ = width;
@@ -33,4 +33,20 @@ public:
 	void Draw() override;
 	void DrawImGUI() override;
 	void Release() override;
+
+	float GetWidth() {
+		return width_;
+	}
+
+	void SetWidth(const float width) {
+		width_ = width;
+	}
+
+	float GetHeight() {
+		return height_;
+	}
+
+	void SetHeight(const float height) {
+		height_ = height;
+	}
 };
