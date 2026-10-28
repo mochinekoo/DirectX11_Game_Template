@@ -139,5 +139,15 @@ std::vector<BaseObject*>& ObjectManager::GetAllObject() {
 }
 
 void ObjectManager::ClearAllObject() {
-	objectList_.clear();
+	for (auto it = objectList_.begin(); it != objectList_.end();) {
+		auto object = *it;
+		if (object->CanDestoryNextScene()) {
+			delete* it;
+			it = objectList_.erase(it);
+			continue;
+		}
+		else {
+			it++;
+		}
+	}
 }

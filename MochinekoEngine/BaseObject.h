@@ -21,6 +21,7 @@ protected:
 	DirectX::XMMATRIX worldMatrix_;
 
 	Transform transform_;
+	bool canDestroyNextScene_;
 public:
 
 	BaseObject(const std::string& name) {
@@ -31,6 +32,7 @@ public:
 		drawHighOrder_ = 0;
 		showImGUI_ = true;
 		parent_ = nullptr;
+		canDestroyNextScene_ = true;
 	};
 	virtual ~BaseObject() {};
 
@@ -116,4 +118,11 @@ public:
 		colliderList_.push_back(collider);
 	};
 
+	bool CanDestoryNextScene() {
+		return canDestroyNextScene_;
+	}
+
+	void SetDestoryNextScene(bool flag) {
+		canDestroyNextScene_ = flag;
+	}
 };
