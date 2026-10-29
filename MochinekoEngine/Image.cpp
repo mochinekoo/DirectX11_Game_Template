@@ -22,6 +22,7 @@ void Image::Update() {
 
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
+	constantBuffer.worldMatrix_ = XMMatrixTranspose(world);
 	constantBuffer.diffuse_ = {};
 	constantBuffer.ambient_ = {};
 	constantBuffer.hasTexture_ = TRUE;

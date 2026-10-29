@@ -24,6 +24,7 @@ void VideoObject::Update() {
 
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
+	constantBuffer.worldMatrix_ = XMMatrixTranspose(world);
 	constantBuffer.diffuse_ = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	constantBuffer.ambient_ = DirectX::XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	constantBuffer.hasTexture_ = TRUE;

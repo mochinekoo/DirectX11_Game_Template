@@ -8,6 +8,7 @@
 #include "ShaderManager.h"
 #include "Camera.h"
 #include "CameraManager.h"
+#include "LightManager.h"
 
 using namespace fbxsdk;
 using namespace DX3DManager;
@@ -32,12 +33,13 @@ void FbxChild::Update() {
 	for (int i = 0; i < materialCount_; i++) {
 		ConstantBuffer constantBuffer = {};
 		constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
+		constantBuffer.worldMatrix_ = XMMatrixTranspose(world);
 		constantBuffer.diffuse_ = materialList_[i].diffuse_;
 		constantBuffer.ambient_ = materialList_[i].ambient_;
 		constantBuffer.specular_ = materialList_[i].specular_;
 		constantBuffer.emission_ = materialList_[i].emission_;
 		constantBuffer.hasTexture_ = (materialList_[i].texture_ != nullptr);
-		constantBuffer.lightDirection_ = { 0.0f, -1.0f, 0.0f };
+		constantBuffer.lightDirection_ = LightManager::GetDefaultLight();
 		GetDeviceContext()->UpdateSubresource(constantBufferList_[i], 0, nullptr, &constantBuffer, 0, 0);
 	}
 }
@@ -260,7 +262,7 @@ void FbxChild::InitVertexBuffer() {
 			vertex.location_ = { (float)vertexLoc[0], (float)vertexLoc[2], (float)vertexLoc[1] };
 			vertex.color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 			vertex.uv_ = { (float)uvLoc.mData[0], (float)(1.0f - uvLoc.mData[1]) };
-			vertex.normal_ = { (float)normal[0], (float)normal[1], (float)normal[2] };
+			vertex.normal_ = { (float)normal[0], (float)normal[2], (float)normal[1] };
 			vertexList_.push_back(vertex);
 
 			indexVertexList_.push_back(vertexIndex);

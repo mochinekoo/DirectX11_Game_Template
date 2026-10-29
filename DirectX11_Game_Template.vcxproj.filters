@@ -162,6 +162,9 @@
     <ClInclude Include="MochinekoEngine\InputManager.h">
       <Filter>MochinekoEngine\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="MochinekoEngine\LightManager.h">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MochinekoEngine\CameraManager.cpp">
@@ -267,6 +270,9 @@
       <Filter>MochinekoEngine</Filter>
     </ClCompile>
     <ClCompile Include="MochinekoEngine\InputManager.cpp">
+      <Filter>MochinekoEngine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\LightManager.cpp">
       <Filter>MochinekoEngine\Manager</Filter>
     </ClCompile>
   </ItemGroup>

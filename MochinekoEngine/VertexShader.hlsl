@@ -3,6 +3,7 @@ SamplerState sampler0 : register(s0);
 
 cbuffer ConstantBuffer : register(b0) {
     matrix wvpMatrix;           // ワールド・ビュー・プロジェクション行列
+    matrix worldMatrix;         // ワールド行列
     float4 diffuse;             // 物体の色
     float4 ambient;             // 光が当たっていない部分の色（環境光）
     float4 specular;            // 光が当たった部分の色（鏡面反射）
@@ -10,6 +11,7 @@ cbuffer ConstantBuffer : register(b0) {
     float shininess;            // 輝きの強さ
     int hasTexture;             // テクスチャを持っているかどうか
     float3 lightDirection;      // ライトの向き
+    int enableGray;
 };
 
 struct VSInput {
@@ -31,9 +33,10 @@ struct VSOutput
 VSOutput main(VSInput input) {
     VSOutput output;
     output.position = mul(float4(input.position, 1.0f), wvpMatrix);
-    output.normal = input.normal;
+    float3x3 normalMatrix = (float3x3)worldMatrix;
+    output.normal = normalize(mul(input.normal, normalMatrix));
     output.color = diffuse;
     output.uv = input.uv;
-
+    
     return output;
 }

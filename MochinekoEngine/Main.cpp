@@ -15,6 +15,7 @@
 #include "DX2DManager.h"
 #include "FontText.h"
 #include "InputManager.h"
+#include "LightManager.h"
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "Winmm.lib")
@@ -151,6 +152,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 			DrawDebugImGUI();
 			SoundManager::DrawDebugImGUI();
+			LightManager::DrawImGUI();
 
 			ImGui::EndFrame();
 			ImGui::Render();

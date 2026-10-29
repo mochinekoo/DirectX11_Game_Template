@@ -49,6 +49,7 @@
     <ClInclude Include="MochinekoEngine\ImGUI\imstb_textedit.h" />
     <ClInclude Include="MochinekoEngine\ImGUI\imstb_truetype.h" />
     <ClInclude Include="MochinekoEngine\InputManager.h" />
+    <ClInclude Include="MochinekoEngine\LightManager.h" />
     <ClInclude Include="MochinekoEngine\MathUtil.h" />
     <ClInclude Include="MochinekoEngine\ModelManager.h" />
     <ClInclude Include="MochinekoEngine\ObjectManager.h" />
@@ -87,6 +88,7 @@
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_tables.cpp" />
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_widgets.cpp" />
     <ClCompile Include="MochinekoEngine\InputManager.cpp" />
+    <ClCompile Include="MochinekoEngine\LightManager.cpp" />
     <ClCompile Include="MochinekoEngine\Main.cpp" />
     <ClCompile Include="MochinekoEngine\ModelManager.cpp" />
     <ClCompile Include="MochinekoEngine\ObjectManager.cpp" />

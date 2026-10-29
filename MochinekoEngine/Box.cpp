@@ -27,6 +27,7 @@ void Box::Update() {
 
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
+	constantBuffer.worldMatrix_ = XMMatrixTranspose(world);
 	constantBuffer.diffuse_ = color_;
 	constantBuffer.ambient_ = {};
 	constantBuffer.hasTexture_ = FALSE;

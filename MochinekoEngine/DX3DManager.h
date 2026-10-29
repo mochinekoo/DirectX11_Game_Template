@@ -54,6 +54,7 @@ struct Vertex {
 /// </summary>
 struct ConstantBuffer {
 	DirectX::XMMATRIX wvpMatrix_ = {};	// ワールド・ビュー・プロジェクション行列
+	DirectX::XMMATRIX worldMatrix_ = {};	// ワールド行列
 	DirectX::XMFLOAT4 diffuse_ = {};
 	DirectX::XMFLOAT4 ambient_ = {};
 	DirectX::XMFLOAT4 specular_ = {};
