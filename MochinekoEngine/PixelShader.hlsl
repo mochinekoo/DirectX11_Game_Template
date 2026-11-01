@@ -25,7 +25,7 @@ float4 main(PSInput input) : SV_TARGET {
     float4 color = input.color;
     
     if (hasTexture == 1) {
-        color = texture0.Sample(sampler0, input.uv);
+        color = texture0.Sample(sampler0, input.uv) * color.a;
     }
     else {
         color = diffuse;
@@ -38,7 +38,6 @@ float4 main(PSInput input) : SV_TARGET {
     float3 baseAmbient = max(ambient.rgb, minAmbient);  // ライトが暗くならないようにするために、maxで比較する
     float3 lighting = saturate(baseAmbient + diffuseFactor);    // 明るさは0～1なので、saturateで
     color.rgb *= lighting;  // ライティングした後の色を求める
-    color.a = 1.0f;
     
     if (enableGray == 1) {
         float r = color.r * 0.299;

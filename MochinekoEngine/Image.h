@@ -7,12 +7,14 @@ class Image : public BaseObject {
 private:
 	Texture* texture_;
 	bool enableGray_;
+	float opacity_;
 public:
 
 	Image(const std::string& fileName)
 		: BaseObject("Image") {
 		texture_ = new Texture(fileName);
 		enableGray_ = false;
+		opacity_ = 1.0f;
 	}
 
 	~Image() {
@@ -31,5 +33,8 @@ public:
 
 	bool IsGray() const { return enableGray_; }
 	void SetGray(bool flag) { enableGray_ = flag; }
+
+	float GetOpacity() const { return opacity_; }
+	void SetOpacity(const float opacity) { opacity_ = opacity; }
 };
 

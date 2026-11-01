@@ -3,6 +3,7 @@
 #include "DX3DManager.h"
 #include <DirectXMath.h>
 #include "ImGUI/imgui.h"
+#include "LightManager.h"
 
 using namespace DX3DManager;
 using namespace DirectX;
@@ -23,9 +24,10 @@ void Image::Update() {
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
 	constantBuffer.worldMatrix_ = XMMatrixTranspose(world);
-	constantBuffer.diffuse_ = {};
-	constantBuffer.ambient_ = {};
+	constantBuffer.diffuse_ = XMFLOAT4(1.0f, 1.0f, 1.0f, opacity_);
+	constantBuffer.ambient_ = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	constantBuffer.hasTexture_ = TRUE;
+	constantBuffer.lightDirection_ = LightManager::GetDefaultLight();
 	constantBuffer.enableGray = enableGray_;
 	GetDeviceContext()->UpdateSubresource(texture_->GetConstanctBuffer(), 0, nullptr, &constantBuffer, 0, 0);
 }
@@ -78,6 +80,7 @@ void Image::DrawImGUI() {
 			ImGui::SliderFloat("Scale X", &transform_.scale_.x, 0.1f, 10.0f);
 			ImGui::SliderFloat("Scale Y", &transform_.scale_.y, 0.1f, 10.0f);
 			ImGui::SliderFloat("Scale Z", &transform_.scale_.z, 0.1f, 10.0f);
+			ImGui::SliderFloat("Opacity", &opacity_, 0.0f, 1.0f);
 
 			ImGui::EndTabItem();
 		}
