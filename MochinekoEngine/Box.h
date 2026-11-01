@@ -3,6 +3,7 @@
 #include <vector>
 #include <d3d11.h>
 #include "DX3DManager.h"
+#include <array>
 
 class Box : public BaseObject {
 private:
@@ -11,13 +12,13 @@ private:
 	ID3D11Buffer* vertexBuffer_;
 	ID3D11Buffer* constantBuffer_;
 	std::vector<Vertex> vertexList_;
-	DirectX::XMFLOAT4 color_;
+	Color color_;
 private:
 	void InitVertexBuffer();
 	void InitConstantBuffer();
 public:
 
-	Box(const float width, const float height, const DirectX::XMFLOAT4& color = {0.0f, 0.0f, 0.0f, 1.0f})
+	Box(const float width, const float height, const Color color = Color::Black())
 		: BaseObject("Box") {
 		color_ = color;
 		width_ = width;
@@ -34,19 +35,13 @@ public:
 	void DrawImGUI() override;
 	void Release() override;
 
-	float GetWidth() {
-		return width_;
-	}
+	float GetWidth() const { return width_; }
+	void SetWidth(const float width) { width_ = width; }
+	float GetHeight() { return height_; }
+	void SetHeight(const float height) { height_ = height; }
 
-	void SetWidth(const float width) {
-		width_ = width;
-	}
-
-	float GetHeight() {
-		return height_;
-	}
-
-	void SetHeight(const float height) {
-		height_ = height;
-	}
+	Color GetColor() const { return color_; }
+	void SetColor(Color color) { color_ = color; }
+	void SetColor(float r, float g, float b, float a) { color_ = {r, g, b, a}; }
+	void SetColor(float colorArray[4]) { color_ = {colorArray[0], colorArray[1], colorArray[2], colorArray[3]}; }
 };

@@ -28,8 +28,8 @@ void Box::Update() {
 	ConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
 	constantBuffer.worldMatrix_ = XMMatrixTranspose(world);
-	constantBuffer.diffuse_ = color_;
-	constantBuffer.ambient_ = {};
+	constantBuffer.diffuse_ = color_.ConvertXMFLOAT4();
+	constantBuffer.ambient_ = color_.ConvertXMFLOAT4();
 	constantBuffer.hasTexture_ = FALSE;
 	GetDeviceContext()->UpdateSubresource(constantBuffer_, 0, nullptr, &constantBuffer, 0, 0);
 }
@@ -75,6 +75,9 @@ void Box::DrawImGUI() {
 
 			ImGui::SliderFloat("Width", &width_, 0.0f, 100.0f);
 			ImGui::SliderFloat("Height", &height_, 0.0f, 100.0f);
+			float colorList[4] = {color_.r_, color_.g_, color_.b_, color_.a_};
+			ImGui::ColorPicker4("Color", colorList);
+			SetColor(colorList);
 
 			ImGui::EndTabItem();
 		}
@@ -92,12 +95,13 @@ void Box::Release()
 void Box::InitVertexBuffer() {
 	vertexList_.resize(6);
 
-	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
-	vertexList_[1] = { {0.0f, 1.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
-	vertexList_[2] = { { 1.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
-	vertexList_[3] = { { 1.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
-	vertexList_[4] = { { 1.0f,  1.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
-	vertexList_[5] = { {0.0f,  1.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
+	XMFLOAT4 color = color_.ConvertXMFLOAT4();
+	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
+	vertexList_[1] = { {0.0f, 1.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
+	vertexList_[2] = { { 1.0f, 0.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
+	vertexList_[3] = { { 1.0f, 0.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
+	vertexList_[4] = { { 1.0f,  1.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
+	vertexList_[5] = { {0.0f,  1.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
 
 	/*
 	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
