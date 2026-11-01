@@ -147,7 +147,7 @@
     <ClInclude Include="MochinekoEngine\ImGUI\imgui_stdlib.h">
       <Filter>MochinekoEngine\ImGUI</Filter>
     </ClInclude>
-    <ClInclude Include="MochinekoEngine\Box.h">
+    <ClInclude Include="MochinekoEngine\Square.h">
       <Filter>MochinekoEngine\Object</Filter>
     </ClInclude>
     <ClInclude Include="MochinekoEngine\ImageButton.h">
@@ -257,7 +257,7 @@
     <ClCompile Include="MochinekoEngine\ImGUI\imgui_stdlib.cpp">
       <Filter>MochinekoEngine\ImGUI</Filter>
     </ClCompile>
-    <ClCompile Include="MochinekoEngine\Box.cpp">
+    <ClCompile Include="MochinekoEngine\Square.cpp">
       <Filter>MochinekoEngine\Object</Filter>
     </ClCompile>
     <ClCompile Include="MochinekoEngine\ImageButton.cpp">

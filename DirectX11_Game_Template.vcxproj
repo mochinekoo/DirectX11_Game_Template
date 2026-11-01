@@ -22,7 +22,7 @@
     <ClInclude Include="MochinekoEngine\BaseCollider.h" />
     <ClInclude Include="MochinekoEngine\BaseObject.h" />
     <ClInclude Include="MochinekoEngine\BaseScene.h" />
-    <ClInclude Include="MochinekoEngine\Box.h" />
+    <ClInclude Include="MochinekoEngine\Square.h" />
     <ClInclude Include="MochinekoEngine\BoxCollider.h" />
     <ClInclude Include="MochinekoEngine\Camera.h" />
     <ClInclude Include="MochinekoEngine\CameraManager.h" />
@@ -63,7 +63,7 @@
     <ClInclude Include="MochinekoEngine\VideoObject.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MochinekoEngine\Box.cpp" />
+    <ClCompile Include="MochinekoEngine\Square.cpp" />
     <ClCompile Include="MochinekoEngine\BoxCollider.cpp" />
     <ClCompile Include="MochinekoEngine\CameraManager.cpp" />
     <ClCompile Include="MochinekoEngine\DebugScene.cpp" />

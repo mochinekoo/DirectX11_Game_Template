@@ -11,7 +11,6 @@
 #include "Camera.h"
 #include "CameraManager.h"
 #include "Image.h"
-#include "Box.h"
 #include "DX2DManager.h"
 #include "FontText.h"
 #include "InputManager.h"

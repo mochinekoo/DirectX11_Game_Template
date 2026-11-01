@@ -1,4 +1,4 @@
-#include "Box.h"
+#include "Square.h"
 #include <d3d11.h>
 #include "DX3DManager.h"
 #include "Camera.h"
@@ -9,12 +9,12 @@
 using namespace DirectX;
 using namespace DX3DManager;
 
-void Box::Init() {
+void Square::Init() {
 	InitVertexBuffer();
 	InitConstantBuffer();
 }
 
-void Box::Update() {
+void Square::Update() {
 	Camera* currentCamera = CameraManager::GetCurrentCamera();
 	XMMATRIX size = XMMatrixScaling(width_, height_, 1.0f);
 	XMMATRIX world = size * transform_.GetWorldMatrix();
@@ -34,7 +34,7 @@ void Box::Update() {
 	GetDeviceContext()->UpdateSubresource(constantBuffer_, 0, nullptr, &constantBuffer, 0, 0);
 }
 
-void Box::Draw() {
+void Square::Draw() {
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
@@ -54,7 +54,7 @@ void Box::Draw() {
 	GetDeviceContext()->RSSetState(nullptr);
 }
 
-void Box::DrawImGUI() {
+void Square::DrawImGUI() {
 	std::string title = GetName() + "(" + GetTag() + ")";
 	ImGui::Begin(title.c_str(), nullptr, ImGuiWindowFlags_NoDocking);
 	if (ImGui::BeginTabBar("Tab")) {
@@ -87,12 +87,12 @@ void Box::DrawImGUI() {
 	ImGui::End();
 }
 
-void Box::Release()
+void Square::Release()
 {
 }
 
 
-void Box::InitVertexBuffer() {
+void Square::InitVertexBuffer() {
 	vertexList_.resize(6);
 
 	XMFLOAT4 color = color_.ConvertXMFLOAT4();
@@ -124,7 +124,7 @@ void Box::InitVertexBuffer() {
 	GetDevice()->CreateBuffer(&vertexDesc, &vertexData, &vertexBuffer_);
 }
 
-void Box::InitConstantBuffer() {
+void Square::InitConstantBuffer() {
 	D3D11_BUFFER_DESC constantDesc = {};
 	constantDesc.Usage = D3D11_USAGE_DEFAULT;
 	constantDesc.ByteWidth = sizeof(ConstantBuffer);

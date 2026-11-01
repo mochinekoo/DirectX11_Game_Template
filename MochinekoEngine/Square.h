@@ -5,7 +5,7 @@
 #include "DX3DManager.h"
 #include <array>
 
-class Box : public BaseObject {
+class Square : public BaseObject {
 private:
 	float width_, height_;
 
@@ -18,8 +18,8 @@ private:
 	void InitConstantBuffer();
 public:
 
-	Box(const float width, const float height, const Color color = Color::Black())
-		: BaseObject("Box") {
+	Square(const float width, const float height, const Color color = Color::Black())
+		: BaseObject("Square") {
 		color_ = color;
 		width_ = width;
 		height_ = height;
@@ -27,7 +27,7 @@ public:
 		constantBuffer_ = nullptr;
 	}
 
-	~Box() {}
+	~Square() {}
 
 	void Init() override;
 	void Update() override;
