@@ -23,6 +23,7 @@
     <ClInclude Include="MochinekoEngine\BaseObject.h" />
     <ClInclude Include="MochinekoEngine\BaseScene.h" />
     <ClInclude Include="MochinekoEngine\Cube.h" />
+    <ClInclude Include="MochinekoEngine\resource.h" />
     <ClInclude Include="MochinekoEngine\Square.h" />
     <ClInclude Include="MochinekoEngine\BoxCollider.h" />
     <ClInclude Include="MochinekoEngine\Camera.h" />
@@ -111,6 +112,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MochinekoEngine\Resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MochinekoEngine\Resource.aps" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>

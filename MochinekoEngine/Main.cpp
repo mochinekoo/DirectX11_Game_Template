@@ -15,6 +15,7 @@
 #include "FontText.h"
 #include "InputManager.h"
 #include "LightManager.h"
+#include "resource.h"
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "Winmm.lib")
@@ -28,6 +29,7 @@ namespace MochinekoEngine {
 	inline HWND mainWindowHandle_ = {};
 	inline bool canShutdown_ = false;
 	float deltaTime_ = 0.0f;
+	inline bool isShowFile_ = false;
 
 	HWND GetGameWindowHandle() {
 		return mainWindowHandle_;
@@ -60,6 +62,15 @@ namespace MochinekoEngine {
 		backgroundColor_[2] = color.b_;
 		backgroundColor_[3] = color.a_;
 	}
+
+#ifdef _DEBUG
+	bool IsShowFileChoose() {
+		return isShowFile_;
+	}
+	void SetFileChoose(bool flag) {
+		isShowFile_ = flag;
+	}
+#endif
 }
 
 using namespace MochinekoEngine;
@@ -178,7 +189,9 @@ void InitWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, i
 	wndClass.hIconSm = LoadIcon(nullptr, IDI_WINLOGO);
 	wndClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
 	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-	wndClass.lpszMenuName = NULL;
+#ifdef _DEBUG
+	wndClass.lpszMenuName = MAKEINTRESOURCEW(IDR_MENU1);
+#endif
 	RegisterClassExW(&wndClass);
 
 	mainWindowHandle_ = CreateWindowW(
@@ -208,7 +221,23 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 			break;
 		}
 		case WM_COMMAND: {
-			switch (LOWORD(wParam)) {}
+			switch (LOWORD(wParam)) {
+				case ID_40006: {
+					char fileNameBuffer[MAX_PATH] = {};
+					OPENFILENAMEA openFileName = {};
+					openFileName.lStructSize = sizeof(OPENFILENAMEA);
+					openFileName.hwndOwner = MochinekoEngine::GetGameWindowHandle();
+					openFileName.lpstrFilter = "FBXファイル(.fbx)\0*.fbx";
+					openFileName.lpstrFile = fileNameBuffer;
+					openFileName.nFilterIndex = 1;
+					openFileName.nMaxFile = MAX_PATH;
+					openFileName.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+					if (GetOpenFileNameA(&openFileName)) {
+						FBX* fbx = new FBX(fileNameBuffer);
+						ObjectManager::AddObject(fbx);
+					}
+				}
+			}
 			break;
 		}
 	}
