@@ -31,6 +31,9 @@ struct Color {
 		return Equal(*this, color);
 	}
 
+	DirectX::XMFLOAT4 ConvertXMFLOAT4() { return DirectX::XMFLOAT4(r_, g_, b_, a_); }
+	DirectX::XMFLOAT3 ConvertXMFLOAT3() { return DirectX::XMFLOAT3(r_, g_, b_); }
+
 	static Color Red() { return Color(1.0f, 0.0f, 0.0f, 1.0f); }
 	static Color Blue() { return Color(0.0f, 0.0f, 1.0f, 1.0f); }
 	static Color Green() { return Color(0.0f, 1.0f, 0.0f, 1.0f); }

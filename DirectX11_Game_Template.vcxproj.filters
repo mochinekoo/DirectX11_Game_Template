@@ -165,6 +165,9 @@
     <ClInclude Include="MochinekoEngine\LightManager.h">
       <Filter>MochinekoEngine\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="MochinekoEngine\Cube.h">
+      <Filter>MochinekoEngine\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MochinekoEngine\CameraManager.cpp">
@@ -274,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="MochinekoEngine\LightManager.cpp">
       <Filter>MochinekoEngine\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="MochinekoEngine\Cube.cpp">
+      <Filter>MochinekoEngine\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
