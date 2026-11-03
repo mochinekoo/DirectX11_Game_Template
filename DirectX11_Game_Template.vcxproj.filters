@@ -37,6 +37,9 @@
     <Filter Include="MochinekoEngine\Util">
       <UniqueIdentifier>{736c3d9b-6723-48b1-b809-ab3975827667}</UniqueIdentifier>
     </Filter>
+    <Filter Include="MochinekoEngine\Resource">
+      <UniqueIdentifier>{532679bd-2e73-499d-904e-ba6f2ba8ad3a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MochinekoEngine\BaseObject.h">
@@ -168,6 +171,9 @@
     <ClInclude Include="MochinekoEngine\Cube.h">
       <Filter>MochinekoEngine\Object</Filter>
     </ClInclude>
+    <ClInclude Include="MochinekoEngine\resource.h">
+      <Filter>MochinekoEngine\Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MochinekoEngine\CameraManager.cpp">
@@ -289,5 +295,15 @@
     <FxCompile Include="MochinekoEngine\VertexShader.hlsl">
       <Filter>MochinekoEngine\Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="MochinekoEngine\Resource.rc">
+      <Filter>MochinekoEngine\Resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MochinekoEngine\Resource.aps">
+      <Filter>MochinekoEngine\Resource</Filter>
+    </None>
   </ItemGroup>
 </Project>

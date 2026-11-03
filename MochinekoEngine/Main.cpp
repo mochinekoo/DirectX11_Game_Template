@@ -16,6 +16,7 @@
 #include "InputManager.h"
 #include "LightManager.h"
 #include "resource.h"
+#include "VideoObject.h"
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "Winmm.lib")
@@ -191,6 +192,8 @@ void InitWindow(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, i
 	wndClass.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
 #ifdef _DEBUG
 	wndClass.lpszMenuName = MAKEINTRESOURCEW(IDR_MENU1);
+#else
+	wndClass.lpszMenuName = NULL;
 #endif
 	RegisterClassExW(&wndClass);
 
@@ -222,20 +225,28 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 		}
 		case WM_COMMAND: {
 			switch (LOWORD(wParam)) {
-				case ID_40006: {
-					char fileNameBuffer[MAX_PATH] = {};
-					OPENFILENAMEA openFileName = {};
-					openFileName.lStructSize = sizeof(OPENFILENAMEA);
-					openFileName.hwndOwner = MochinekoEngine::GetGameWindowHandle();
-					openFileName.lpstrFilter = "FBXファイル(.fbx)\0*.fbx";
-					openFileName.lpstrFile = fileNameBuffer;
-					openFileName.nFilterIndex = 1;
-					openFileName.nMaxFile = MAX_PATH;
-					openFileName.Flags = OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
-					if (GetOpenFileNameA(&openFileName)) {
-						FBX* fbx = new FBX(fileNameBuffer);
-						ObjectManager::AddObject(fbx);
-					}
+				case MENU_OPENFILE: {
+					MochinekoUtil::openFileDialog("FBXファイル(.fbx)\0*.fbx\0画像ファイル(.png)\0*.png\0動画ファイル(.mp4)\0*.mp4", 
+						[](const std::string& fileName) {
+							if (fileName.ends_with(".fbx")) {
+								FBX* fbx = new FBX(fileName);
+								ObjectManager::AddObject(fbx);
+							}
+							else if (fileName.ends_with(".png")) {
+								Image* image = new Image(fileName);
+								ObjectManager::AddObject(image);
+							}
+							else if (fileName.ends_with(".mp4")) {
+								VideoObject* video = new VideoObject(fileName);
+								ObjectManager::AddObject(video);
+							}
+						}
+					);
+					break;
+				}
+				case MENU_EXIT: {
+					MochinekoEngine::Shutdown();
+					break;
 				}
 			}
 			break;
