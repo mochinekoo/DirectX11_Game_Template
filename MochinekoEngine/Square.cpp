@@ -31,7 +31,7 @@ void Square::Update() {
 	constantBuffer.diffuse_ = color_.ConvertXMFLOAT4();
 	constantBuffer.ambient_ = color_.ConvertXMFLOAT4();
 	constantBuffer.hasTexture_ = FALSE;
-	GetDeviceContext()->UpdateSubresource(constantBuffer_, 0, nullptr, &constantBuffer, 0, 0);
+	GetDeviceContext()->UpdateSubresource(constantBuffer_.Get(), 0, nullptr, &constantBuffer, 0, 0);
 }
 
 void Square::Draw() {
@@ -43,11 +43,11 @@ void Square::Draw() {
 
 	ID3D11ShaderResourceView* nullSrv = { nullptr };
 	GetDeviceContext()->PSSetShaderResources(0, 1, &nullSrv);
-	GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer_, &stride, &offset);
+	GetDeviceContext()->IASetVertexBuffers(0, 1, vertexBuffer_.GetAddressOf(), &stride, &offset);
 	GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	GetDeviceContext()->RSSetState(GetRasterizerState());
-	GetDeviceContext()->VSSetConstantBuffers(0, 1, &constantBuffer_);
-	GetDeviceContext()->PSSetConstantBuffers(0, 1, &constantBuffer_);
+	GetDeviceContext()->VSSetConstantBuffers(0, 1, constantBuffer_.GetAddressOf());
+	GetDeviceContext()->PSSetConstantBuffers(0, 1, constantBuffer_.GetAddressOf());
 
 	GetDeviceContext()->Draw(6, 0);
 

@@ -14,7 +14,7 @@ public:
 	};
 
 	~VideoObject() {
-		delete videoData_;
+		Release();
 	};
 
 	void Init() override;

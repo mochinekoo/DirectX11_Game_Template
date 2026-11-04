@@ -4,13 +4,16 @@
 #include <d3d11.h>
 #include "DX3DManager.h"
 #include <array>
+#include <wrl/client.h>
+
+using Microsoft::WRL::ComPtr;
 
 class Square : public BaseObject {
 private:
 	float width_, height_;
 
-	ID3D11Buffer* vertexBuffer_;
-	ID3D11Buffer* constantBuffer_;
+	ComPtr<ID3D11Buffer> vertexBuffer_;
+	ComPtr<ID3D11Buffer> constantBuffer_;
 	std::vector<Vertex> vertexList_;
 	Color color_;
 private:
@@ -27,7 +30,9 @@ public:
 		constantBuffer_ = nullptr;
 	}
 
-	~Square() {}
+	~Square() {
+		Release();
+	}
 
 	void Init() override;
 	void Update() override;

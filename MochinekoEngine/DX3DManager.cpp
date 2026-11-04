@@ -5,24 +5,26 @@
 #include <DirectXMath.h>
 #include "Framework.h"
 #include "ShaderManager.h"
+#include <wrl/client.h>
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
 using namespace MochinekoEngine;
+using Microsoft::WRL::ComPtr;
 
 namespace DX3DManager {
-	inline ID3D11Device* device_ = nullptr;
-	inline ID3D11DeviceContext* deviceContext_ = nullptr;
-	inline IDXGISwapChain* swapChain_ = nullptr;
-	inline ID3D11RenderTargetView* renderTargetView_ = nullptr;
-	inline ID3D11Texture2D* texture2D_ = nullptr;
-	inline ID3D11Texture2D* depthStencilTexture_ = nullptr;
-	inline ID3D11DepthStencilState* depthState_ = nullptr;
-	inline ID3D11DepthStencilView* depthStencilView_ = nullptr;
-	inline ID3D11RasterizerState* rasterizerState_ = nullptr;
-	inline ID3D11RasterizerState* wireframeRasterizerState_ = nullptr;
-	inline ID3D11BlendState* blendState_ = nullptr;
+	inline ComPtr<ID3D11Device> device_ = nullptr;
+	inline ComPtr<ID3D11DeviceContext> deviceContext_ = nullptr;
+	inline ComPtr<IDXGISwapChain> swapChain_ = nullptr;
+	inline ComPtr<ID3D11RenderTargetView> renderTargetView_ = nullptr;
+	inline ComPtr<ID3D11Texture2D> texture2D_ = nullptr;
+	inline ComPtr<ID3D11Texture2D> depthStencilTexture_ = nullptr;
+	inline ComPtr<ID3D11DepthStencilState> depthState_ = nullptr;
+	inline ComPtr<ID3D11DepthStencilView> depthStencilView_ = nullptr;
+	inline ComPtr<ID3D11RasterizerState> rasterizerState_ = nullptr;
+	inline ComPtr<ID3D11RasterizerState> wireframeRasterizerState_ = nullptr;
+	inline ComPtr<ID3D11BlendState> blendState_ = nullptr;
 }
 
 void DX3DManager::InitDX3D() {
@@ -80,9 +82,9 @@ void DX3DManager::InitDevice() {
 
 	assert(SUCCEEDED(resultFunc));
 
-	resultFunc = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&texture2D_);
+	resultFunc = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)texture2D_.GetAddressOf());
 	assert(SUCCEEDED(resultFunc));
-	resultFunc = device_->CreateRenderTargetView(texture2D_, NULL, &renderTargetView_);
+	resultFunc = device_->CreateRenderTargetView(texture2D_.Get(), NULL, renderTargetView_.GetAddressOf());
 	assert(SUCCEEDED(resultFunc));
 }
 
@@ -105,7 +107,7 @@ void DX3DManager::InitDepthBuffer() {
 	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	depthDesc.CPUAccessFlags = 0;
 
-	resultFunc = device_->CreateTexture2D(&depthDesc, nullptr, &depthStencilTexture_);
+	resultFunc = device_->CreateTexture2D(&depthDesc, nullptr, depthStencilTexture_.GetAddressOf());
 	assert(SUCCEEDED(resultFunc));
 
 	///
@@ -117,7 +119,7 @@ void DX3DManager::InitDepthBuffer() {
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	resultFunc = device_->CreateDepthStencilView(depthStencilTexture_, &depthStencilViewDesc, &depthStencilView_);
+	resultFunc = device_->CreateDepthStencilView(depthStencilTexture_.Get(), &depthStencilViewDesc, depthStencilView_.GetAddressOf());
 	assert(SUCCEEDED(resultFunc));
 }
 
@@ -155,9 +157,9 @@ void DX3DManager::InitRasterizer() {
 	wireframeDesc.CullMode = D3D11_CULL_NONE;
 	wireframeDesc.FrontCounterClockwise = FALSE;
 
-	resultFunc = device_->CreateRasterizerState(&rasterizerDesc, &rasterizerState_);
+	resultFunc = device_->CreateRasterizerState(&rasterizerDesc, rasterizerState_.GetAddressOf());
 	assert(SUCCEEDED(resultFunc));
-	resultFunc = device_->CreateRasterizerState(&wireframeDesc, &wireframeRasterizerState_);
+	resultFunc = device_->CreateRasterizerState(&wireframeDesc, wireframeRasterizerState_.GetAddressOf());
 	assert(SUCCEEDED(resultFunc));
 	//deviceContext_->RSSetState(rasterizerState_);
 	DisableWireframe();
@@ -180,11 +182,11 @@ void DX3DManager::InitBlend() {
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
-	resultFunc = device_->CreateBlendState(&blendDesc, &blendState_);
+	resultFunc = device_->CreateBlendState(&blendDesc, blendState_.GetAddressOf());
 	assert(SUCCEEDED(resultFunc));
 
 	float blendFactor[4] = { 0, 0, 0, 0 };
-	deviceContext_->OMSetBlendState(blendState_, blendFactor, 0xFFFFFFFF);
+	deviceContext_->OMSetBlendState(blendState_.Get(), blendFactor, 0xFFFFFFFF);
 }
 
 void DX3DManager::Resize(float width, float height) {
@@ -217,9 +219,9 @@ void DX3DManager::Resize(float width, float height) {
 	HRESULT hr = swapChain_->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
 	assert(SUCCEEDED(hr));
 
-	hr = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&texture2D_);
+	hr = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)texture2D_.GetAddressOf());
 	assert(SUCCEEDED(hr));
-	hr = device_->CreateRenderTargetView(texture2D_, nullptr, &renderTargetView_);
+	hr = device_->CreateRenderTargetView(texture2D_.Get(), nullptr, renderTargetView_.GetAddressOf());
 	assert(SUCCEEDED(hr));
 
 	D3D11_TEXTURE2D_DESC depthDesc = {};
@@ -231,12 +233,12 @@ void DX3DManager::Resize(float width, float height) {
 	depthDesc.SampleDesc.Count = 1;
 	depthDesc.Usage = D3D11_USAGE_DEFAULT;
 	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	hr = device_->CreateTexture2D(&depthDesc, nullptr, &depthStencilTexture_);
+	hr = device_->CreateTexture2D(&depthDesc, nullptr, depthStencilTexture_.GetAddressOf());
 	assert(SUCCEEDED(hr));
-	hr = device_->CreateDepthStencilView(depthStencilTexture_, nullptr, &depthStencilView_);
+	hr = device_->CreateDepthStencilView(depthStencilTexture_.Get(), nullptr, depthStencilView_.GetAddressOf());
 	assert(SUCCEEDED(hr));
 
-	deviceContext_->OMSetRenderTargets(1, &renderTargetView_, depthStencilView_);
+	deviceContext_->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), depthStencilView_.Get());
 
 	D3D11_VIEWPORT viewport = {};
 	viewport.Width = (float)width;
@@ -245,32 +247,32 @@ void DX3DManager::Resize(float width, float height) {
 	deviceContext_->RSSetViewports(1, &viewport);
 
 	float blendFactor[4] = { 0, 0, 0, 0 };
-	deviceContext_->OMSetBlendState(blendState_, blendFactor, 0xFFFFFFFF);
+	deviceContext_->OMSetBlendState(blendState_.Get(), blendFactor, 0xFFFFFFFF);
 }
 
-ID3D11Device* DX3DManager::GetDevice() { return device_; }
-ID3D11DeviceContext* DX3DManager::GetDeviceContext() { return deviceContext_; }
-IDXGISwapChain* DX3DManager::GetSwapChain() { return swapChain_; }
-ID3D11RenderTargetView* DX3DManager::GetRTV() { return renderTargetView_; }
-ID3D11Texture2D* DX3DManager::GetTexture2D() { return texture2D_; }
-ID3D11Texture2D* DX3DManager::GetDepthTexture2D() { return depthStencilTexture_; }
-ID3D11DepthStencilState* DX3DManager::GetDepthState() { return depthState_; }
-ID3D11DepthStencilView* DX3DManager::GetDepthView() { return depthStencilView_; }
-ID3D11RasterizerState* DX3DManager::GetRasterizerState() { return rasterizerState_; }
-ID3D11BlendState* DX3DManager::GetBlendState() { return blendState_; }
+ID3D11Device* DX3DManager::GetDevice() { return device_.Get(); }
+ID3D11DeviceContext* DX3DManager::GetDeviceContext() { return deviceContext_.Get(); }
+IDXGISwapChain* DX3DManager::GetSwapChain() { return swapChain_.Get(); }
+ID3D11RenderTargetView* DX3DManager::GetRTV() { return renderTargetView_.Get(); }
+ID3D11Texture2D* DX3DManager::GetTexture2D() { return texture2D_.Get(); }
+ID3D11Texture2D* DX3DManager::GetDepthTexture2D() { return depthStencilTexture_.Get(); }
+ID3D11DepthStencilState* DX3DManager::GetDepthState() { return depthState_.Get(); }
+ID3D11DepthStencilView* DX3DManager::GetDepthView() { return depthStencilView_.Get(); }
+ID3D11RasterizerState* DX3DManager::GetRasterizerState() { return rasterizerState_.Get(); }
+ID3D11BlendState* DX3DManager::GetBlendState() { return blendState_.Get(); }
 
 void DX3DManager::EnableZDepthWrite() {
-	GetDeviceContext()->OMSetRenderTargets(1, &renderTargetView_, GetDepthView());
+	GetDeviceContext()->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), GetDepthView());
 }
 
 void DX3DManager::DisableZDepthWrite() {
-	GetDeviceContext()->OMSetRenderTargets(1, &renderTargetView_, nullptr);
+	GetDeviceContext()->OMSetRenderTargets(1, renderTargetView_.GetAddressOf(), nullptr);
 }
 
 void DX3DManager::EnableWireframe() {
-	deviceContext_->RSSetState(wireframeRasterizerState_);
+	deviceContext_->RSSetState(wireframeRasterizerState_.Get());
 }
 
 void DX3DManager::DisableWireframe() {
-	deviceContext_->RSSetState(rasterizerState_);
+	deviceContext_->RSSetState(rasterizerState_.Get());
 }

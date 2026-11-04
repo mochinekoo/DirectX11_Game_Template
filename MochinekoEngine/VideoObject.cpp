@@ -89,4 +89,5 @@ void VideoObject::DrawImGUI() {
 }
 
 void VideoObject::Release() {
+	delete videoData_;
 }
