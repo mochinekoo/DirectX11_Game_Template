@@ -32,6 +32,10 @@ namespace MochinekoEngine {
 	float deltaTime_ = 0.0f;
 	inline bool isShowFile_ = false;
 
+	inline float screen_width = 1280.0f;
+	inline float screen_height = 720.0f;
+
+
 	HWND GetGameWindowHandle() {
 		return mainWindowHandle_;
 	}
@@ -62,6 +66,18 @@ namespace MochinekoEngine {
 		backgroundColor_[1] = color.g_;
 		backgroundColor_[2] = color.b_;
 		backgroundColor_[3] = color.a_;
+	}
+
+	float GetScreenWidth() {
+		return screen_width;
+	}
+
+	float GetScreenHeight() {
+		return screen_height;
+	}
+
+	float GetAspectRatio() {
+		return screen_width / screen_height;
 	}
 
 #ifdef _DEBUG
@@ -221,6 +237,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	switch (message) {
 		case WM_DESTROY: {
 			PostQuitMessage(0);
+			break;
+		}
+		case WM_SIZE: {
+			UINT width = LOWORD(lParam);
+			UINT height = HIWORD(lParam);
+
+			MochinekoEngine::screen_width = width;
+			MochinekoEngine::screen_height = height;
+			auto camera = CameraManager::GetCurrentCamera();
+			if (camera == nullptr || width == 0 || height == 0) break;
+
+			DX2DManager::Release();
+			DX3DManager::Resize(width, height);
+			DX2DManager::Init();
+			camera->resize();
 			break;
 		}
 		case WM_COMMAND: {

@@ -1,6 +1,7 @@
 #pragma once
 #include <DirectXMath.h>
 #include <string>
+#include "Framework.h"
 
 class Camera {
 private:
@@ -10,13 +11,16 @@ public:
 	DirectX::XMFLOAT3 postion_;
 	DirectX::XMFLOAT3 target_;
 	DirectX::XMFLOAT3 upDirection_;
+	float angle_;
 
 	Camera(const std::string& name) {
 		name_ = name;
 		postion_ = { 0.0f, 0.0f, -5.0f};
 		target_ = { 0.0f, 2.0f, 0.0f };
 		upDirection_ = { 0.0f, 1.0f, 0.0f };
-		projection_ = DirectX::XMMatrixPerspectiveFovLH(DirectX::XMConvertToRadians(60.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
+		angle_ = DirectX::XMConvertToRadians(60.0f);
+
+		projection_ = DirectX::XMMatrixPerspectiveFovLH(angle_, MochinekoEngine::GetAspectRatio(), 0.1f, 100.0f);
 	}
 
 	Camera(const std::string& name, const DirectX::XMFLOAT3& eye, const DirectX::XMFLOAT3& at, const DirectX::XMFLOAT3& up, const DirectX::XMMATRIX& projection) {
@@ -46,5 +50,9 @@ public:
 
 	std::string GetName() const {
 		return name_;
+	}
+
+	void resize() {
+		projection_ = DirectX::XMMatrixPerspectiveFovLH(angle_, MochinekoEngine::GetAspectRatio(), 0.1f, 100.0f);
 	}
 };

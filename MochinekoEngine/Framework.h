@@ -21,6 +21,10 @@ namespace MochinekoEngine {
 	Color GetBackgroundColor();
 	void SetBackgroundColor(const Color& color);
 
+	float GetScreenWidth();
+	float GetScreenHeight();
+	float GetAspectRatio();
+
 
 #ifdef _DEBUG
 	bool IsShowFileChoose();

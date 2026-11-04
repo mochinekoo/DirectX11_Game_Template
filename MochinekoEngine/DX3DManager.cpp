@@ -187,6 +187,67 @@ void DX3DManager::InitBlend() {
 	deviceContext_->OMSetBlendState(blendState_, blendFactor, 0xFFFFFFFF);
 }
 
+void DX3DManager::Resize(float width, float height) {
+	if (width == 0 || height == 0) {
+		return;
+	}
+
+	deviceContext_->OMSetRenderTargets(0, nullptr, nullptr);
+
+	if (renderTargetView_) { 
+		renderTargetView_->Release();
+		renderTargetView_ = nullptr; 
+	}
+	if (texture2D_) { 
+		texture2D_->Release();
+		texture2D_ = nullptr; 
+	}
+	if (depthStencilView_) {
+		depthStencilView_->Release();
+		depthStencilView_ = nullptr;
+	}
+	if (depthStencilTexture_) {
+		depthStencilTexture_->Release();
+		depthStencilTexture_ = nullptr;
+	}
+
+	deviceContext_->ClearState();
+	deviceContext_->Flush();
+
+	HRESULT hr = swapChain_->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
+	assert(SUCCEEDED(hr));
+
+	hr = swapChain_->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&texture2D_);
+	assert(SUCCEEDED(hr));
+	hr = device_->CreateRenderTargetView(texture2D_, nullptr, &renderTargetView_);
+	assert(SUCCEEDED(hr));
+
+	D3D11_TEXTURE2D_DESC depthDesc = {};
+	depthDesc.Width = width;
+	depthDesc.Height = height;
+	depthDesc.MipLevels = 1;
+	depthDesc.ArraySize = 1;
+	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthDesc.SampleDesc.Count = 1;
+	depthDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	hr = device_->CreateTexture2D(&depthDesc, nullptr, &depthStencilTexture_);
+	assert(SUCCEEDED(hr));
+	hr = device_->CreateDepthStencilView(depthStencilTexture_, nullptr, &depthStencilView_);
+	assert(SUCCEEDED(hr));
+
+	deviceContext_->OMSetRenderTargets(1, &renderTargetView_, depthStencilView_);
+
+	D3D11_VIEWPORT viewport = {};
+	viewport.Width = (float)width;
+	viewport.Height = (float)height;
+	viewport.MaxDepth = 1.0f;
+	deviceContext_->RSSetViewports(1, &viewport);
+
+	float blendFactor[4] = { 0, 0, 0, 0 };
+	deviceContext_->OMSetBlendState(blendState_, blendFactor, 0xFFFFFFFF);
+}
+
 ID3D11Device* DX3DManager::GetDevice() { return device_; }
 ID3D11DeviceContext* DX3DManager::GetDeviceContext() { return deviceContext_; }
 IDXGISwapChain* DX3DManager::GetSwapChain() { return swapChain_; }

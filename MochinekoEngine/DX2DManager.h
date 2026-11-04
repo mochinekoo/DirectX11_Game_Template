@@ -33,4 +33,6 @@ namespace DX2DManager {
 	void DrawFontText(const int x, const int y, const std::string& text, const Color& color);
 	ID2D1RenderTarget* GetRenderTarget();
 	IDWriteFactory* GetWriteFactory();
+
+	void Release();
 }

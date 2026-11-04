@@ -35,27 +35,30 @@ void FontText::Update()
 }
 
 void FontText::Draw() {
-	D2D1_SIZE_F size = DX2DManager::GetRenderTarget()->GetSize();
-	DX2DManager::GetRenderTarget()->BeginDraw();
-	D2D1_MATRIX_3X2_F transform = D2D1::Matrix3x2F::Scale(transform_.scale_.x, transform_.scale_.y) * D2D1::Matrix3x2F::Rotation(transform_.rotation_.y);
-	DX2DManager::GetRenderTarget()->SetTransform(transform);
+	ID2D1RenderTarget* rt = DX2DManager::GetRenderTarget();
+	if (rt == nullptr) return;
 
-	D2D1_COLOR_F d2dColor = D2D1::ColorF(0.0f, 0.0f, 0.0f, 1.0f);
-	d2dColor.r = color_.r_;
-	d2dColor.g = color_.g_;
-	d2dColor.b = color_.b_;
-	d2dColor.a = color_.a_;
-	fontData_.brush_->SetColor(d2dColor);
+	D2D1_SIZE_F size = rt->GetSize();
+	D2D1_COLOR_F d2dColor = D2D1::ColorF(color_.r_, color_.g_, color_.b_, color_.a_);
 
-	DX2DManager::GetRenderTarget()->DrawText(
-		text_.c_str(),
+	ID2D1SolidColorBrush* brush = nullptr;
+	rt->CreateSolidColorBrush(d2dColor, &brush);
+
+	rt->BeginDraw();
+	D2D1_MATRIX_3X2_F transform = D2D1::Matrix3x2F::Scale(transform_.scale_.x, transform_.scale_.y)
+		* D2D1::Matrix3x2F::Rotation(transform_.rotation_.y);
+	rt->SetTransform(transform);
+
+	rt->DrawText(
+		text_.c_str(), 
 		text_.size(),
 		fontData_.textFormat_,
 		D2D1::RectF(transform_.location_.x, transform_.location_.y, size.width, size.height),
-		fontData_.brush_
+		brush
 	);
+	rt->EndDraw();
 
-	DX2DManager::GetRenderTarget()->EndDraw();
+	brush->Release();
 }
 
 void FontText::DrawImGUI() {

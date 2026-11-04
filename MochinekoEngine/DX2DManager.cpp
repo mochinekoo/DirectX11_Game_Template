@@ -25,6 +25,7 @@ void DX2DManager::Init() {
 		)
 	);
 	d2dFactory_->CreateDxgiSurfaceRenderTarget(surface, &props, &renderTarget_);
+	surface->Release();
 
 	/// デフォルトのフォント
 	const std::wstring DEFAULT_FONTNAME = L"メイリオ";
@@ -84,4 +85,27 @@ ID2D1RenderTarget* DX2DManager::GetRenderTarget() {
 
 IDWriteFactory* DX2DManager::GetWriteFactory() {
 	return writeFactory_;
+}
+
+void DX2DManager::Release() {
+	if (renderTarget_) {
+		renderTarget_->Release();
+		renderTarget_ = nullptr;
+	}
+	if (defaultFont_.brush_) {
+		defaultFont_.brush_->Release();
+		defaultFont_.brush_ = nullptr;
+	}
+	if (defaultFont_.textFormat_) {
+		defaultFont_.textFormat_->Release();
+		defaultFont_.textFormat_ = nullptr;
+	}
+	if (writeFactory_) {
+		writeFactory_->Release();
+		writeFactory_ = nullptr;
+	}
+	if (d2dFactory_) {
+		d2dFactory_->Release();
+		d2dFactory_ = nullptr;
+	}
 }

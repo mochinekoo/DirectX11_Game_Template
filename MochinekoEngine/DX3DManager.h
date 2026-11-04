@@ -84,6 +84,8 @@ namespace DX3DManager {
 	void InitRasterizer();
 	void InitBlend();
 
+	void Resize(float width, float height);
+
 	 ID3D11Device* GetDevice();
 	 ID3D11DeviceContext* GetDeviceContext();
 	 IDXGISwapChain* GetSwapChain();
