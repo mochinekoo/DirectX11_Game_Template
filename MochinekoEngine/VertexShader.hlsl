@@ -12,6 +12,7 @@ cbuffer ConstantBuffer : register(b0) {
     int hasTexture;             // テクスチャを持っているかどうか
     float3 lightDirection;      // ライトの向き
     int enableGray;
+    int colorInversion;
 };
 
 struct VSInput {

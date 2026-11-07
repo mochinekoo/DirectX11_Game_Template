@@ -12,6 +12,8 @@ cbuffer ConstantBuffer : register(b0) {
     int hasTexture;
     float3 lightDirection;
     int enableGray;
+    int colorInversion;
+    int colorBinary;
 };
 
 struct PSInput {
@@ -25,10 +27,16 @@ float4 main(PSInput input) : SV_TARGET {
     float4 color = input.color;
     
     if (hasTexture == 1) {
-        color = texture0.Sample(sampler0, input.uv) * color.a;
+        color = texture0.Sample(sampler0, input.uv) * color;
     }
     else {
         color = diffuse;
+    }
+    
+    if (colorInversion == 1) {
+        color.r = 1.0f - color.r;
+        color.g = 1.0f - color.g;
+        color.b = 1.0f - color.b;
     }
     
     float3 normalizelLight = normalize(-lightDirection);    // ライトの正規化

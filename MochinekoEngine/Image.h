@@ -6,8 +6,14 @@
 class Image : public BaseObject {
 private:
 	Texture* texture_;
-	bool enableGray_;
 	float opacity_;
+
+	//
+	// エフェクト系
+	//
+
+	bool enableGray_;		// グレースケール
+	bool colorInversion_;	// 反転
 public:
 
 	Image(const std::string& fileName)
@@ -15,6 +21,7 @@ public:
 		texture_ = new Texture(fileName);
 		enableGray_ = false;
 		opacity_ = 1.0f;
+		colorInversion_ = false;
 	}
 
 	~Image() {

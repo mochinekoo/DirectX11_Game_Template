@@ -66,6 +66,8 @@ struct ConstantBuffer {
 	int hasTexture_ = FALSE;
 	DirectX::XMFLOAT3 lightDirection_ = {};
 	int enableGray = FALSE;
+	int colorInversion = FALSE;
+	int colorBinary = FALSE;
 };
 
 /// <summary>

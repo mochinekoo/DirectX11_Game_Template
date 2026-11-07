@@ -29,6 +29,7 @@ void Image::Update() {
 	constantBuffer.hasTexture_ = TRUE;
 	constantBuffer.lightDirection_ = LightManager::GetDefaultLight();
 	constantBuffer.enableGray = enableGray_;
+	constantBuffer.colorInversion = colorInversion_;
 	GetDeviceContext()->UpdateSubresource(texture_->GetConstanctBuffer(), 0, nullptr, &constantBuffer, 0, 0);
 }
 
@@ -81,6 +82,7 @@ void Image::DrawImGUI() {
 			ImGui::SliderFloat("Scale Y", &transform_.scale_.y, 0.1f, 10.0f);
 			ImGui::SliderFloat("Scale Z", &transform_.scale_.z, 0.1f, 10.0f);
 			ImGui::SliderFloat("Opacity", &opacity_, 0.0f, 1.0f);
+			ImGui::Checkbox("Inversion", &colorInversion_);
 
 			ImGui::EndTabItem();
 		}
