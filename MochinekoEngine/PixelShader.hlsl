@@ -14,6 +14,10 @@ cbuffer ConstantBuffer : register(b0) {
     int enableGray;
     int colorInversion;
     int colorBinary;
+    
+    // セピア
+    int colorSepia;
+    float sepiaStrength;
 };
 
 struct PSInput {
@@ -37,6 +41,19 @@ float4 main(PSInput input) : SV_TARGET {
         color.r = 1.0f - color.r;
         color.g = 1.0f - color.g;
         color.b = 1.0f - color.b;
+    }
+    
+    if (colorSepia == 1) {
+        float3 original = color.rgb;
+
+        float3 sepia;
+        sepia.r = dot(original, float3(0.393, 0.769, 0.189));
+        sepia.g = dot(original, float3(0.349, 0.686, 0.168));
+        sepia.b = dot(original, float3(0.272, 0.534, 0.131));
+
+        sepia = saturate(sepia);
+
+        color.rgb = lerp(original, sepia, saturate(sepiaStrength));
     }
     
     float3 normalizelLight = normalize(-lightDirection);    // ライトの正規化

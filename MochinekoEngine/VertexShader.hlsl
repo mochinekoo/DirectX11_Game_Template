@@ -13,6 +13,7 @@ cbuffer ConstantBuffer : register(b0) {
     float3 lightDirection;      // ライトの向き
     int enableGray;
     int colorInversion;
+    int colorSepia;
 };
 
 struct VSInput {

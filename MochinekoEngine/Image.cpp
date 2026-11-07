@@ -30,6 +30,8 @@ void Image::Update() {
 	constantBuffer.lightDirection_ = LightManager::GetDefaultLight();
 	constantBuffer.enableGray = enableGray_;
 	constantBuffer.colorInversion = colorInversion_;
+	constantBuffer.colorSepia = sepia_;
+	constantBuffer.sepiaStrength = sepiaStrength_;
 	GetDeviceContext()->UpdateSubresource(texture_->GetConstanctBuffer(), 0, nullptr, &constantBuffer, 0, 0);
 }
 
@@ -83,6 +85,8 @@ void Image::DrawImGUI() {
 			ImGui::SliderFloat("Scale Z", &transform_.scale_.z, 0.1f, 10.0f);
 			ImGui::SliderFloat("Opacity", &opacity_, 0.0f, 1.0f);
 			ImGui::Checkbox("Inversion", &colorInversion_);
+			ImGui::Checkbox("Sepia", &sepia_);
+			ImGui::SliderFloat("Sepia Strength", &sepiaStrength_, 0.0f, 1.0f);
 
 			ImGui::EndTabItem();
 		}

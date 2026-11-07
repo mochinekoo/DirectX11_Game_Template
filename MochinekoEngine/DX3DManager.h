@@ -68,6 +68,8 @@ struct ConstantBuffer {
 	int enableGray = FALSE;
 	int colorInversion = FALSE;
 	int colorBinary = FALSE;
+	int colorSepia = FALSE;
+	float sepiaStrength = 0.0f;
 };
 
 /// <summary>

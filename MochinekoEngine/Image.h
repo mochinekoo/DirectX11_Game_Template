@@ -14,14 +14,19 @@ private:
 
 	bool enableGray_;		// グレースケール
 	bool colorInversion_;	// 反転
+	bool sepia_;			// セピア
+	float sepiaStrength_;	// セピアの強さ
 public:
 
 	Image(const std::string& fileName)
 		: BaseObject("Image") {
 		texture_ = new Texture(fileName);
-		enableGray_ = false;
 		opacity_ = 1.0f;
+
+		enableGray_ = false;
 		colorInversion_ = false;
+		sepia_ = false;
+		sepiaStrength_ = 1.0f;
 	}
 
 	~Image() {
