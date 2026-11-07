@@ -8,6 +8,9 @@
 
 class Cube : public BaseObject {
 private:
+	bool enableBorder_;
+	float borderSize_;
+
 	DirectX::XMFLOAT3 cubeSize_;
 	ID3D11Buffer* vertexBuffer_;
 	// ID3D11Buffer* constantBuffer_;
@@ -30,6 +33,10 @@ public:
 	Cube(DirectX::XMFLOAT3 cubeSize)
 		: BaseObject("Cube") {
 		cubeSize_ = cubeSize;
+		vertexBuffer_ = nullptr;
+
+		enableBorder_ = false;
+		borderSize_ = 3.0f;
 	};
 	~Cube() {
 

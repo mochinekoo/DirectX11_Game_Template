@@ -10,6 +10,8 @@ using namespace DX3DManager;
 
 namespace {
 	const int CUBE_FACE = 6;
+	inline ID3D11RasterizerState* rasterizerState_ = nullptr;
+	inline ID3D11Buffer* outlineConstantBuffer_ = nullptr;
 }
 
 void Cube::Init() {
@@ -17,6 +19,18 @@ void Cube::Init() {
 	InitIndexBuffer();
 	InitConstantBuffer();
 	InitMaterial();
+
+	D3D11_RASTERIZER_DESC rasterizerDesc = {};
+	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerDesc.CullMode = D3D11_CULL_BACK;
+	rasterizerDesc.FrontCounterClockwise = FALSE;
+	GetDevice()->CreateRasterizerState(&rasterizerDesc, &rasterizerState_);
+
+	D3D11_BUFFER_DESC constantDesc = {};
+	constantDesc.Usage = D3D11_USAGE_DEFAULT;
+	constantDesc.ByteWidth = sizeof(ConstantBuffer);
+	constantDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	GetDevice()->CreateBuffer(&constantDesc, nullptr, &outlineConstantBuffer_);
 }
 
 void Cube::Update() {
@@ -37,6 +51,18 @@ void Cube::Update() {
 		constantBuffer.lightDirection_ = LightManager::GetDefaultLight();
 		GetDeviceContext()->UpdateSubresource(constantBufferList_[i], 0, nullptr, &constantBuffer, 0, 0);
 	}
+
+
+	float borderSize = borderSize_ + 1.0f;
+	XMMATRIX borderWorld = XMMatrixTranslation(-0.5f, -0.5f, -0.5f) * XMMatrixScaling(borderSize, borderSize, borderSize) * XMMatrixTranslation(0.5f, 0.5f, 0.5f) * world;
+	ConstantBuffer borderCb = {};
+	borderCb.wvpMatrix_ = XMMatrixTranspose(borderWorld * view * projection);
+	borderCb.worldMatrix_ = XMMatrixTranspose(borderWorld);
+	borderCb.diffuse_ = {1.0f, 0.0f, 0.0f, 1.0f};
+	borderCb.ambient_ = { 1.0f, 1.0f, 1.0f, 1.0f };
+	borderCb.lightDirection_ = LightManager::GetDefaultLight();
+	borderCb.hasTexture_ = FALSE;
+	GetDeviceContext()->UpdateSubresource(outlineConstantBuffer_, 0, nullptr, &borderCb, 0, 0);;
 }
 
 void Cube::Draw() {
@@ -45,6 +71,19 @@ void Cube::Draw() {
 
 	ShaderManager::SetPixelShader("MochinekoEngine/PixelShader.hlsl");
 	ShaderManager::SetVertexShader("MochinekoEngine/VertexShader.hlsl");
+
+	if (enableBorder_) {
+		GetDeviceContext()->RSSetState(rasterizerState_);
+		GetDeviceContext()->VSSetConstantBuffers(0, 1, &outlineConstantBuffer_);
+		GetDeviceContext()->PSSetConstantBuffers(0, 1, &outlineConstantBuffer_);
+		GetDeviceContext()->IASetVertexBuffers(0, 1, &vertexBuffer_, &stride, &offset);
+		GetDeviceContext()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		for (int i = 0; i < CUBE_FACE; i++) {
+			GetDeviceContext()->IASetIndexBuffer(indexBufferList_[i], DXGI_FORMAT_R32_UINT, 0);
+			GetDeviceContext()->DrawIndexed(materialIndexList_[i].size(), 0, 0);
+		}
+		GetDeviceContext()->RSSetState(nullptr);
+	}
 
 	for (int i = 0; i < CUBE_FACE; i++) {
 		ID3D11ShaderResourceView* nullSrv = { nullptr };
@@ -90,6 +129,8 @@ void Cube::DrawImGUI() {
 			ImGui::SliderFloat("Scale Y", &transform_.scale_.y, 0.1f, 10.0f);
 			ImGui::SliderFloat("Scale Z", &transform_.scale_.z, 0.1f, 10.0f);
 			//ImGui::Checkbox("Wireframe", &wireframe_);
+			ImGui::Checkbox("Border", &enableBorder_);
+			ImGui::SliderFloat("Border Size", &borderSize_, 0.0f, 3.0f);
 
 			ImGui::EndTabItem();
 		}
@@ -240,8 +281,8 @@ void Cube::InitIndexBuffer() {
 		4, 7, 6, 4, 5, 7,
 		8, 10, 11, 8, 11, 9,
 		12, 14, 15, 12, 15, 13,
-		16, 17, 19, 16, 19, 18,
-		20, 21, 23, 20, 23, 22
+		16, 19, 17, 16, 18, 19,
+		20, 23, 21, 20, 22, 23
 	};
 
 	for (int i = 0; i < CUBE_FACE; i++) {
