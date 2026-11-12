@@ -39,7 +39,9 @@ void DX3DManager::InitDX3D() {
 void DX3DManager::InitShader() {
 	ShaderManager::Init();
 	ShaderManager::AddShader(ShaderType::PIXEL_SHADER, "MochinekoEngine/PixelShader.hlsl");
+	ShaderManager::AddShader(ShaderType::PIXEL_SHADER, "MochinekoEngine/SpherePixelShader.hlsl");
 	ShaderManager::AddShader(ShaderType::VERTEX_SHADER, "MochinekoEngine/VertexShader.hlsl");
+	ShaderManager::AddShader(ShaderType::VERTEX_SHADER, "MochinekoEngine/SphereVertexShader.hlsl");
 }
 
 void DX3DManager::InitDevice() {

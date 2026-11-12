@@ -8,6 +8,12 @@
 
 using Microsoft::WRL::ComPtr;
 
+struct SphereConstantBuffer {
+	DirectX::XMMATRIX wvpMatrix_ = {};	// ワールド・ビュー・プロジェクション行列
+	DirectX::XMMATRIX worldMatrix_ = {};	// ワールド行列
+	DirectX::XMFLOAT4 colorList_[2] = {};
+};
+
 class Square : public BaseObject {
 private:
 	float width_, height_;
@@ -15,15 +21,16 @@ private:
 	ComPtr<ID3D11Buffer> vertexBuffer_;
 	ComPtr<ID3D11Buffer> constantBuffer_;
 	std::vector<Vertex> vertexList_;
-	Color color_;
+	std::vector<Color> colorList_;
 private:
 	void InitVertexBuffer();
 	void InitConstantBuffer();
 public:
 
-	Square(const float width, const float height, const Color color = Color::Black())
+	Square(const float width, const float height, Color color = Color::Black())
 		: BaseObject("Square") {
-		color_ = color;
+		colorList_.push_back(Color::Blue());
+		colorList_.push_back(Color::Red());
 		width_ = width;
 		height_ = height;
 		vertexBuffer_ = nullptr;
@@ -45,8 +52,6 @@ public:
 	float GetHeight() { return height_; }
 	void SetHeight(const float height) { height_ = height; }
 
-	Color GetColor() const { return color_; }
-	void SetColor(Color color) { color_ = color; }
-	void SetColor(float r, float g, float b, float a) { color_ = {r, g, b, a}; }
-	void SetColor(float colorArray[4]) { color_ = {colorArray[0], colorArray[1], colorArray[2], colorArray[3]}; }
+	auto& GetColorList() const { return colorList_; }
+	void SetColor(int index, Color color) { colorList_[index] = color; }
 };

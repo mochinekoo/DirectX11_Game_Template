@@ -25,12 +25,13 @@ void Square::Update() {
 		0.0f, 100.0f
 	);
 
-	ConstantBuffer constantBuffer = {};
+	SphereConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
 	constantBuffer.worldMatrix_ = XMMatrixTranspose(world);
-	constantBuffer.diffuse_ = color_.ConvertXMFLOAT4();
-	constantBuffer.ambient_ = color_.ConvertXMFLOAT4();
-	constantBuffer.hasTexture_ = FALSE;
+	for (int i = 0; i < colorList_.size(); i++) {
+		Color& color = colorList_[i];
+		constantBuffer.colorList_[i] = colorList_[i].ConvertXMFLOAT4();
+	}
 	GetDeviceContext()->UpdateSubresource(constantBuffer_.Get(), 0, nullptr, &constantBuffer, 0, 0);
 }
 
@@ -38,8 +39,8 @@ void Square::Draw() {
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	ShaderManager::SetPixelShader("MochinekoEngine/PixelShader.hlsl");
-	ShaderManager::SetVertexShader("MochinekoEngine/VertexShader.hlsl");
+	ShaderManager::SetPixelShader("MochinekoEngine/SpherePixelShader.hlsl");
+	ShaderManager::SetVertexShader("MochinekoEngine/SphereVertexShader.hlsl");
 
 	ID3D11ShaderResourceView* nullSrv = { nullptr };
 	GetDeviceContext()->PSSetShaderResources(0, 1, &nullSrv);
@@ -75,9 +76,15 @@ void Square::DrawImGUI() {
 
 			ImGui::SliderFloat("Width", &width_, 0.0f, 100.0f);
 			ImGui::SliderFloat("Height", &height_, 0.0f, 100.0f);
-			float colorList[4] = {color_.r_, color_.g_, color_.b_, color_.a_};
-			ImGui::ColorPicker4("Color", colorList);
-			SetColor(colorList);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Color")) {
+			for (int i = 0; i < colorList_.size(); i++) {
+				Color& color = colorList_[i];
+				float colorList[4] = {color.r_, color.g_, color.b_, color.a_};
+				ImGui::ColorPicker4(std::to_string(i).c_str(), colorList);
+				SetColor(i, Color(colorList[0], colorList[1], colorList[2], colorList[3]));
+			}
 
 			ImGui::EndTabItem();
 		}
@@ -95,13 +102,16 @@ void Square::Release()
 void Square::InitVertexBuffer() {
 	vertexList_.resize(6);
 
-	XMFLOAT4 color = color_.ConvertXMFLOAT4();
-	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
-	vertexList_[1] = { {0.0f, 1.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
-	vertexList_[2] = { { 1.0f, 0.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
-	vertexList_[3] = { { 1.0f, 0.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
-	vertexList_[4] = { { 1.0f,  1.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
-	vertexList_[5] = { {0.0f,  1.0f, 0.0f}, {}, color, {0.0f, 0.0f} };
+	//XMFLOAT4 color = color_.ConvertXMFLOAT4();
+	auto color = colorList_[0].ConvertXMFLOAT4();
+
+	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color, {0.0f, 0.0f}};	// 左上
+	vertexList_[1] = { {0.0f, 1.0f, 0.0f}, {}, color, {0.0f, 1.0f} };	// 左下
+	vertexList_[2] = { { 1.0f, 0.0f, 0.0f}, {}, color, {1.0f, 0.0f} };	// 右上
+
+	vertexList_[3] = { { 1.0f, 0.0f, 0.0f}, {}, color, {1.0f, 0.0f} };	// 右上
+	vertexList_[4] = { { 1.0f,  1.0f, 0.0f}, {}, color, {1.0f, 1.0f} };	// 右下
+	vertexList_[5] = { {0.0f,  1.0f, 0.0f}, {}, color, {0.0f, 1.0f} };	// 左下
 
 	/*
 	vertexList_[0] = { {0.0f, 0.0f, 0.0f}, {}, color_, {0.0f, 0.0f} };
@@ -127,7 +137,7 @@ void Square::InitVertexBuffer() {
 void Square::InitConstantBuffer() {
 	D3D11_BUFFER_DESC constantDesc = {};
 	constantDesc.Usage = D3D11_USAGE_DEFAULT;
-	constantDesc.ByteWidth = sizeof(ConstantBuffer);
+	constantDesc.ByteWidth = sizeof(SphereConstantBuffer);
 	constantDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	GetDevice()->CreateBuffer(&constantDesc, nullptr, &constantBuffer_);
 }

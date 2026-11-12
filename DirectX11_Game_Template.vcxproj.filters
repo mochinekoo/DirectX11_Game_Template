@@ -295,6 +295,12 @@
     <FxCompile Include="MochinekoEngine\VertexShader.hlsl">
       <Filter>MochinekoEngine\Shader</Filter>
     </FxCompile>
+    <FxCompile Include="MochinekoEngine\SpherePixelShader.hlsl">
+      <Filter>MochinekoEngine\Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="MochinekoEngine\SphereVertexShader.hlsl">
+      <Filter>MochinekoEngine\Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MochinekoEngine\Resource.rc">
