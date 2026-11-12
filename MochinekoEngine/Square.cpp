@@ -25,7 +25,7 @@ void Square::Update() {
 		0.0f, 100.0f
 	);
 
-	SphereConstantBuffer constantBuffer = {};
+	SquareConstantBuffer constantBuffer = {};
 	constantBuffer.wvpMatrix_ = XMMatrixTranspose(world * view * projection);
 	constantBuffer.worldMatrix_ = XMMatrixTranspose(world);
 	for (int i = 0; i < colorList_.size(); i++) {
@@ -137,7 +137,7 @@ void Square::InitVertexBuffer() {
 void Square::InitConstantBuffer() {
 	D3D11_BUFFER_DESC constantDesc = {};
 	constantDesc.Usage = D3D11_USAGE_DEFAULT;
-	constantDesc.ByteWidth = sizeof(SphereConstantBuffer);
+	constantDesc.ByteWidth = sizeof(SquareConstantBuffer);
 	constantDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	GetDevice()->CreateBuffer(&constantDesc, nullptr, &constantBuffer_);
 }

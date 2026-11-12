@@ -8,7 +8,7 @@
 
 using Microsoft::WRL::ComPtr;
 
-struct SphereConstantBuffer {
+struct SquareConstantBuffer {
 	DirectX::XMMATRIX wvpMatrix_ = {};	// ワールド・ビュー・プロジェクション行列
 	DirectX::XMMATRIX worldMatrix_ = {};	// ワールド行列
 	DirectX::XMFLOAT4 colorList_[2] = {};
