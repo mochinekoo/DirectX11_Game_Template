@@ -39,8 +39,8 @@ void Square::Draw() {
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
-	ShaderManager::SetPixelShader("MochinekoEngine/SpherePixelShader.hlsl");
-	ShaderManager::SetVertexShader("MochinekoEngine/SphereVertexShader.hlsl");
+	ShaderManager::SetPixelShader("MochinekoEngine/SquarePixelShader.hlsl");
+	ShaderManager::SetVertexShader("MochinekoEngine/SquareVertexShader.hlsl");
 
 	ID3D11ShaderResourceView* nullSrv = { nullptr };
 	GetDeviceContext()->PSSetShaderResources(0, 1, &nullSrv);

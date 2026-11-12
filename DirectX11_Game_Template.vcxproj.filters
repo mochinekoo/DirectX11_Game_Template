@@ -295,10 +295,10 @@
     <FxCompile Include="MochinekoEngine\VertexShader.hlsl">
       <Filter>MochinekoEngine\Shader</Filter>
     </FxCompile>
-    <FxCompile Include="MochinekoEngine\SpherePixelShader.hlsl">
+    <FxCompile Include="MochinekoEngine\SquarePixelShader.hlsl">
       <Filter>MochinekoEngine\Shader</Filter>
     </FxCompile>
-    <FxCompile Include="MochinekoEngine\SphereVertexShader.hlsl">
+    <FxCompile Include="MochinekoEngine\SquareVertexShader.hlsl">
       <Filter>MochinekoEngine\Shader</Filter>
     </FxCompile>
   </ItemGroup>
