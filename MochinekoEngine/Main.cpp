@@ -17,6 +17,7 @@
 #include "LightManager.h"
 #include "resource.h"
 #include "VideoObject.h"
+#include "FFmpegEncoder.h"
 
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "Winmm.lib")
@@ -31,6 +32,7 @@ namespace MochinekoEngine {
 	inline bool canShutdown_ = false;
 	float deltaTime_ = 0.0f;
 	inline bool isShowFile_ = false;
+	inline FFmpegEncoder defaultEncoder_ = FFmpegEncoder().GetInstance();
 
 	inline float screen_width = 1280.0f;
 	inline float screen_height = 720.0f;
@@ -66,6 +68,10 @@ namespace MochinekoEngine {
 		backgroundColor_[1] = color.g_;
 		backgroundColor_[2] = color.b_;
 		backgroundColor_[3] = color.a_;
+	}
+
+	FFmpegEncoder GetDefaultEncoder() {
+		return defaultEncoder_;
 	}
 
 	float GetScreenWidth() {
@@ -175,7 +181,26 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			SceneManager::Update();
 			ObjectManager::Update();
 
-			text->Draw();
+			if (defaultEncoder_.IsEncode()) {
+				GetDeviceContext()->CopyResource(GetScreenTexture2D(), GetTexture2D());
+				D3D11_MAPPED_SUBRESOURCE mapped = {};
+				GetDeviceContext()->Map(GetScreenTexture2D(), 0, D3D11_MAP_READ, 0, &mapped);
+				const size_t rowSize = (size_t) 1280 * 4;
+				auto nowFrame = std::vector<unsigned char>(rowSize * 720);
+
+				for (UINT y = 0; y < 720; ++y) {
+					memcpy_s(
+						nowFrame.data() + y * rowSize,
+						rowSize,
+						(const unsigned char*)(mapped.pData) + y * mapped.RowPitch,
+						rowSize
+					);
+				}
+				defaultEncoder_.WriteData(nowFrame);
+				nowFrame.clear();
+
+				GetDeviceContext()->Unmap(GetScreenTexture2D(), 0);
+			}
 
 			DrawDebugImGUI();
 			SoundManager::DrawDebugImGUI();
@@ -259,15 +284,15 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) 
 				case MENU_OPENFILE: {
 					MochinekoUtil::openFileDialog("FBXファイル(.fbx)\0*.fbx\0画像ファイル(.png)\0*.png\0動画ファイル(.mp4)\0*.mp4", 
 						[](const std::string& fileName) {
-							if (fileName.ends_with(".fbx")) {
+							if (fileName.ends_with(".fbx") || fileName.ends_with(".FBX")) {
 								FBX* fbx = new FBX(fileName);
 								ObjectManager::AddObject(fbx);
 							}
-							else if (fileName.ends_with(".png")) {
+							else if (fileName.ends_with(".png") || fileName.ends_with(".PNG")) {
 								Image* image = new Image(fileName);
 								ObjectManager::AddObject(image);
 							}
-							else if (fileName.ends_with(".mp4")) {
+							else if (fileName.ends_with(".mp4") || fileName.ends_with(".MP4")) {
 								VideoObject* video = new VideoObject(fileName);
 								ObjectManager::AddObject(video);
 							}
@@ -312,6 +337,17 @@ void DrawDebugImGUI() {
 	auto leftTilt = InputManager::GetControllerTiltLeft();
 
 	ImGui::Begin("DebugInfo");
+	if (ImGui::Button("EncodeStart")) {
+		defaultEncoder_.StartEncode(
+			"output.mp4",
+			1280,
+			720,
+			60
+		);
+	}
+	if (ImGui::Button("EncodeStop")) {
+		defaultEncoder_.StopEncode();
+	}
 	ImGui::Text("DeltaTime: %2.2f", MochinekoEngine::GetDeltaTime());
 	ImGui::Text("Mouse Left: %d, Mouse Center: %d, Mouse Right: %d", InputManager::CheckPushMouse(0), InputManager::CheckPushMouse(1), InputManager::CheckPushMouse(2));
 	ImGui::Text("Mouse Left: %d, Mouse Center: %d, Mouse Right: %d", InputManager::CheckDownMouse(0), InputManager::CheckDownMouse(1), InputManager::CheckDownMouse(2));

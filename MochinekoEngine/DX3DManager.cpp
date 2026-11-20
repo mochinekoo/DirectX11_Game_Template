@@ -19,6 +19,7 @@ namespace DX3DManager {
 	inline ComPtr<IDXGISwapChain> swapChain_ = nullptr;
 	inline ComPtr<ID3D11RenderTargetView> renderTargetView_ = nullptr;
 	inline ComPtr<ID3D11Texture2D> texture2D_ = nullptr;
+	inline ComPtr<ID3D11Texture2D> screenTexture2D_ = nullptr;
 	inline ComPtr<ID3D11Texture2D> depthStencilTexture_ = nullptr;
 	inline ComPtr<ID3D11DepthStencilState> depthState_ = nullptr;
 	inline ComPtr<ID3D11DepthStencilView> depthStencilView_ = nullptr;
@@ -34,6 +35,8 @@ void DX3DManager::InitDX3D() {
 	InitRasterizer();
 	InitBlend();
 	InitShader();
+
+	InitTexture();
 }
 
 void DX3DManager::InitShader() {
@@ -191,6 +194,22 @@ void DX3DManager::InitBlend() {
 	deviceContext_->OMSetBlendState(blendState_.Get(), blendFactor, 0xFFFFFFFF);
 }
 
+void DX3DManager::InitTexture() {
+	HRESULT resultFunc = S_OK;
+	D3D11_TEXTURE2D_DESC desc = {};
+	desc.Width = 1280;
+	desc.Height = 720;
+	desc.MipLevels = 1;
+	desc.ArraySize = 1;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.SampleDesc.Count = 1;
+	desc.Usage = D3D11_USAGE_STAGING;
+	desc.BindFlags = 0;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	desc.MiscFlags = 0;
+	resultFunc = device_.Get()->CreateTexture2D(&desc, nullptr, screenTexture2D_.GetAddressOf());
+}
+
 void DX3DManager::Resize(float width, float height) {
 	if (width == 0 || height == 0) {
 		return;
@@ -258,6 +277,7 @@ IDXGISwapChain* DX3DManager::GetSwapChain() { return swapChain_.Get(); }
 ID3D11RenderTargetView* DX3DManager::GetRTV() { return renderTargetView_.Get(); }
 ID3D11Texture2D* DX3DManager::GetTexture2D() { return texture2D_.Get(); }
 ID3D11Texture2D* DX3DManager::GetDepthTexture2D() { return depthStencilTexture_.Get(); }
+ID3D11Texture2D* DX3DManager::GetScreenTexture2D() { return screenTexture2D_.Get();  }
 ID3D11DepthStencilState* DX3DManager::GetDepthState() { return depthState_.Get(); }
 ID3D11DepthStencilView* DX3DManager::GetDepthView() { return depthStencilView_.Get(); }
 ID3D11RasterizerState* DX3DManager::GetRasterizerState() { return rasterizerState_.Get(); }

@@ -23,6 +23,7 @@
     <ClInclude Include="MochinekoEngine\BaseObject.h" />
     <ClInclude Include="MochinekoEngine\BaseScene.h" />
     <ClInclude Include="MochinekoEngine\Cube.h" />
+    <ClInclude Include="MochinekoEngine\FFmpegEncoder.h" />
     <ClInclude Include="MochinekoEngine\resource.h" />
     <ClInclude Include="MochinekoEngine\Square.h" />
     <ClInclude Include="MochinekoEngine\BoxCollider.h" />
@@ -66,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MochinekoEngine\Cube.cpp" />
+    <ClCompile Include="MochinekoEngine\FFmpegEncoder.cpp" />
     <ClCompile Include="MochinekoEngine\Square.cpp" />
     <ClCompile Include="MochinekoEngine\BoxCollider.cpp" />
     <ClCompile Include="MochinekoEngine\CameraManager.cpp" />

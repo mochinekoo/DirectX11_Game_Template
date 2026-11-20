@@ -87,6 +87,7 @@ namespace DX3DManager {
 	void InitViewPort();
 	void InitRasterizer();
 	void InitBlend();
+	void InitTexture();
 
 	void Resize(float width, float height);
 
@@ -96,6 +97,7 @@ namespace DX3DManager {
 	 ID3D11RenderTargetView* GetRTV();
 	 ID3D11Texture2D* GetTexture2D();
 	 ID3D11Texture2D* GetDepthTexture2D();
+	 ID3D11Texture2D* GetScreenTexture2D();
 	 ID3D11DepthStencilState* GetDepthState();
 	 ID3D11DepthStencilView* GetDepthView();
 	 ID3D11RasterizerState* GetRasterizerState();

@@ -8,3 +8,5 @@
 *.png
 *.fbx
 /Bossa_Latte.mp3
+/ffmpeg.exe
+/output.mp4

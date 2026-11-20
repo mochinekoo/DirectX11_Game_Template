@@ -3,6 +3,7 @@
 #include <array>
 #include <functional>
 #include <string>
+#include "FFmpegEncoder.h"
 
 struct Color;
 
@@ -20,6 +21,7 @@ namespace MochinekoEngine {
 	float GetDeltaTime();
 	Color GetBackgroundColor();
 	void SetBackgroundColor(const Color& color);
+	FFmpegEncoder GetDefaultEncoder();
 
 	float GetScreenWidth();
 	float GetScreenHeight();
