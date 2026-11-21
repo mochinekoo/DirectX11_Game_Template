@@ -13,11 +13,7 @@ void FFmpegEncoder::StartEncode(const std::string& fileName, int width, int heig
 	height_ = height;
 	fps_ = fps;
     isEncode_ = true;
-}
 
-void FFmpegEncoder::StopEncode() {
-    if (!isEncode_) return;
-	
     std::string command =
         "ffmpeg -y -f rawvideo "
         "-pixel_format bgra "
@@ -36,14 +32,13 @@ void FFmpegEncoder::StopEncode() {
     sa.bInheritHandle = TRUE;
 
     HANDLE readPipe = nullptr;
-    HANDLE writePipe = nullptr;
 
-    if (!CreatePipe(&readPipe, &writePipe, &sa, NULL)) {
+    if (!CreatePipe(&readPipe, &writePipe_, &sa, NULL)) {
         isEncode_ = false;
         OutputDebugString(L"パイプの作成に失敗したよ\n");
         return;
     }
-    SetHandleInformation(writePipe, HANDLE_FLAG_INHERIT, NULL);
+    SetHandleInformation(writePipe_, HANDLE_FLAG_INHERIT, NULL);
 
     STARTUPINFOA startupInfo = {};
     startupInfo.cb = sizeof(startupInfo);
@@ -52,7 +47,6 @@ void FFmpegEncoder::StopEncode() {
     startupInfo.hStdOutput = GetStdHandle(STD_OUTPUT_HANDLE);
     startupInfo.hStdError = GetStdHandle(STD_ERROR_HANDLE);
 
-    PROCESS_INFORMATION processInfo = {};
     BOOL resultFunc = FALSE;
 
     resultFunc = CreateProcessA(
@@ -65,41 +59,40 @@ void FFmpegEncoder::StopEncode() {
         nullptr,
         nullptr,
         &startupInfo,
-        &processInfo
+        &processInfo_
     );
 
     if (!resultFunc) {
         isEncode_ = false;
-        CloseHandle(writePipe);
+        CloseHandle(writePipe_);
         OutputDebugString(L"プロセスの作成に失敗したよ");
         return;
     }
     isEncode_ = true;
     CloseHandle(readPipe);
+}
 
-    for (auto& data : encodeData_) {
-        auto rawData = data.data();
+void FFmpegEncoder::StopEncode() {
+    CloseHandle(writePipe_);
+    WaitForSingleObject(processInfo_.hProcess, INFINITE);
 
-        size_t offset = 0; // 位置
-        while (offset < data.size()) {    // 読み取り位置が、ピクセルサイズを超えたら終了
-            DWORD chunk = (DWORD)min(data.size() - offset, 1024 * 1024);
-            DWORD writeen = 0; // 書き込み済み
-            if (!WriteFile(writePipe, rawData + offset, chunk, &writeen, nullptr) || writeen == 0) {
-                isEncode_ = false;
-                break;
-            }
-            offset += writeen;
-        }
-    }
-
-    CloseHandle(writePipe);
-    WaitForSingleObject(processInfo.hProcess, INFINITE);
-
-    CloseHandle(processInfo.hThread);
-    CloseHandle(processInfo.hProcess);
+    CloseHandle(processInfo_.hThread);
+    CloseHandle(processInfo_.hProcess);
     isEncode_ = false;
+    processInfo_ = {};
 }
 
 void FFmpegEncoder::WriteData(const std::vector<unsigned char> encodeData) {
-    encodeData_.push_back(encodeData);
+    auto rawData = encodeData.data();
+
+    size_t offset = 0; // 位置
+    while (offset < encodeData.size()) {    // 読み取り位置が、ピクセルサイズを超えたら終了
+        DWORD chunk = (DWORD)min(encodeData.size() - offset, 1024 * 1024);
+        DWORD writeen = 0; // 書き込み済み
+        if (!WriteFile(writePipe_, rawData + offset, chunk, &writeen, nullptr) || writeen == 0) {
+            isEncode_ = false;
+            break;
+        }
+        offset += writeen;
+    }
 }

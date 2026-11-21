@@ -6,11 +6,13 @@
 class FFmpegEncoder  {
 private:
 	bool isEncode_;
-	std::vector<std::vector<unsigned char>> encodeData_;
 
 	std::string fileName_;
 	int width_, height_;
 	int fps_;
+
+	HANDLE writePipe_;
+	PROCESS_INFORMATION processInfo_;
 public:
 
 	FFmpegEncoder() {
@@ -18,6 +20,8 @@ public:
 		fileName_ = "";
 		width_ = 0, height_ = 0;
 		fps_ = 0;
+		writePipe_ = nullptr;
+		processInfo_ = {};
 	}
 
 	~FFmpegEncoder();
